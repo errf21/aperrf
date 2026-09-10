@@ -34,6 +34,11 @@ DEFAULT_DB: Dict[str, Any] = {
         "default_fingerprint": "chrome",     # chrome | ios | firefox | edge | random
         "default_alpn": "http/1.1",          # http/1.1 | h2,http/1.1 | h3,h2,http/1.1
         "sni_override": "",                  # optional domain-fronting SNI; blank = use host
+        "link_prefix": "aperrf",             # naming prefix for subscription link remarks; blank = PANEL default
+        # ---- fully custom per-config subscription remarks; blank = fall back to "{link_prefix}-{name}-SUFFIX" ----
+        "link_name_vl_ws_tls": "",
+        "link_name_vm_ws_tls": "",
+        "link_name_vl_xhttp_tls": "",
         "fragment_enabled": True,
         "fragment_packets": "tlshello",
         "fragment_length": "10-30",

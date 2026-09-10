@@ -1,79 +1,160 @@
 /* ===========================================================
-   StanNG — Wizarding Academy Theme (v1.4.0)
-   A cohesive dark-academia magic palette with improved contrast
-   and accessibility across dark/light modes.
+   aperrf — Control Center Theme (v1.4.0)
+   Dark navy glass surface system with restrained cyan accent,
+   designed for a network-operations / infrastructure console
+   feel. Legacy variable names are retained as remapped aliases.
    =========================================================== */
 
 :root {
-  /* --- base surfaces --- */
-  --bg-0: #0b0817;
-  --bg-1: #120c24;
-  --bg-2: #1a1330;
-  --bg-3: #241a42;
-  --surface: rgba(255, 255, 255, 0.045);
-  --surface-strong: rgba(255, 255, 255, 0.08);
-  --border-soft: rgba(201, 162, 39, 0.22);
-  --border-strong: rgba(201, 162, 39, 0.45);
+  /* ==========================================================
+     aperrf — "Control Center" token layer
+     Legacy variable names (--ink-*, --ember-*, --gold-*,
+     --phosphor-*, ...) are kept as aliases and remapped, so
+     existing components inherit the new identity; new code
+     should reference the canonical --ink/--accent/--type and
+     --glass-* tokens.
+     ========================================================== */
 
-  /* --- brand gold --- */
-  --gold-100: #f6e6b4;
-  --gold-300: #e6c765;
-  --gold-500: #c9a227;
-  --gold-700: #9c7a17;
-  --gold-glow: rgba(201, 162, 39, 0.35);
+  /* --- canonical: deep-navy / blue-gray surfaces --- */
+  --ink-0: #080C12;
+  --ink-1: #0D141C;
+  --ink-2: #111B25;
+  --ink-3: #16222D;
+  --bg-0: var(--ink-0);
+  --bg-1: var(--ink-1);
+  --bg-2: var(--ink-2);
+  --bg-3: var(--ink-3);
+  --surface: rgba(255, 255, 255, 0.035);
+  --surface-strong: rgba(255, 255, 255, 0.06);
 
-  /* --- accent hues (harmonized "house" palette) --- */
-  --amethyst: #8b5cf6;
-  --amethyst-d: #6d3fd1;
-  --emerald: #2fbf85;
-  --emerald-d: #1e9468;
-  --crimson: #d9455f;
-  --crimson-d: #b32d47;
-  --azure: #4d9fec;
-  --azure-d: #2f7fd0;
+  /* --- canonical: restrained glass primitives --- */
+  --glass-1: rgba(13, 20, 28, 0.68);
+  --glass-2: rgba(17, 27, 37, 0.72);
+  --glass-3: rgba(22, 34, 45, 0.74);
+  --glass-border: rgba(148, 171, 196, 0.14);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.055);
+  --panel-blur: blur(14px) saturate(1.15);
 
-  /* --- text --- */
-  --text-0: #f2eee6;
-  --text-1: #cfc7e4;
-  --text-2: #9d93bd;
-  --text-muted: #746a92;
+  /* --- canonical: hairline border system (cool blue-gray) --- */
+  --hairline: rgba(148, 171, 196, 0.13);
+  --hairline-strong: rgba(53, 208, 197, 0.32);
+  --border-soft: var(--hairline);
+  --border-strong: var(--hairline-strong);
 
-  --radius-lg: 20px;
+  /* --- canonical: cyan accent (the only sanctioned glow) --- */
+  --accent-100: #C9F5F0;
+  --accent-300: #5FDCCF;
+  --accent-500: #35D0C5;
+  --accent-700: #1D8F88;
+  --accent-glow: rgba(53, 208, 197, 0.22);
+  --ember-100: var(--accent-100);   /* legacy aliases — remapped */
+  --ember-300: var(--accent-300);
+  --ember-500: var(--accent-500);
+  --ember-700: var(--accent-700);
+  --ember-glow: var(--accent-glow);
+  --gold-100: var(--accent-100);
+  --gold-300: var(--accent-300);
+  --gold-500: var(--accent-500);
+  --gold-700: var(--accent-700);
+  --gold-glow: var(--accent-glow);
+
+  /* --- canonical: semantic states --- */
+  --phosphor: #3ECF83;          /* live / success */
+  --phosphor-d: #1E9C5F;
+  --fault: #E05252;             /* down / danger */
+  --fault-d: #A83236;
+  --telemetry: #4CA6E8;         /* info / links — azure blue, separated from the teal accent */
+  --telemetry-d: #2B74A8;
+  --sage-dim: #93A7BB;          /* neutral secondary data */
+  --sage-dimmer: #5F7387;
+  --emerald: var(--phosphor);   /* legacy aliases */
+  --emerald-d: var(--phosphor-d);
+  --crimson: var(--fault);
+  --crimson-d: var(--fault-d);
+  --azure: var(--telemetry);
+  --azure-d: var(--telemetry-d);
+  --amethyst: var(--sage-dim);
+  --amethyst-d: var(--sage-dimmer);
+  --warn: var(--accent-300);
+
+  /* --- canonical: text ladder (cool porcelain) --- */
+  --type-0: #E6EDF3;
+  --type-1: #A9BCCB;
+  --type-2: #7A8FA1;
+  --type-3: #52667A;
+  --text-0: var(--type-0);
+  --text-1: var(--type-1);
+  --text-2: var(--type-2);
+  --text-muted: var(--type-3);
+
+  /* --- radius system (moderately rounded glass geometry) --- */
+  --radius-lg: 18px;
   --radius-md: 14px;
-  --radius-sm: 9px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
 
-  --shadow-card: 0 10px 30px -12px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.35);
-  --shadow-pop: 0 20px 60px -20px rgba(0, 0, 0, 0.65);
+  /* --- depth system: soft elevation + top edge light --- */
+  --edge-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --shadow-card: 0 10px 28px -14px rgba(0, 0, 0, 0.6), 0 2px 8px -4px rgba(0, 0, 0, 0.45);
+  --shadow-pop: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
 
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --dur-fast: 140ms;
-  --dur-mid: 260ms;
-  --dur-slow: 420ms;
+  /* --- motion system: functional, short, no springs --- */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-spring: cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast: 120ms;
+  --dur-mid: 180ms;
+  --dur-slow: 240ms;
 
-  --font-fa: 'Vazirmatn', 'Segoe UI', sans-serif;
-  --font-en: 'Vazirmatn', 'Segoe UI', sans-serif;
-  --font-display: 'Cinzel', 'Vazirmatn', serif;
+  /* --- type ramp + typography voices --- */
+  --fs-xs: 11.5px;
+  --fs-sm: 13px;
+  --fs-md: 14.5px;
+  --fs-lg: 18px;
+  --fs-xl: 22px;
+  --fs-2xl: 28px;
+  --fs-3xl: 40px;
+  --ls-mono: 0.12em;
+  --font-fa: 'Vazirmatn', 'Space Grotesk', sans-serif;
+  --font-en: 'Space Grotesk', 'Vazirmatn', sans-serif;
+  --font-display: 'Space Grotesk', 'Vazirmatn', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Vazirmatn', monospace;
 }
 
-/* ========== LIGHT THEME — improved contrast ========== */
+/* ========== LIGHT THEME — cool slate, not parchment ========== */
 html[data-theme="light"] {
-  --bg-0: #f3efe4;
-  --bg-1: #ece3cf;
-  --bg-2: #e4d7b8;
-  --bg-3: #d8c99e;
-  --surface: rgba(30, 20, 10, 0.06);
-  --surface-strong: rgba(30, 20, 10, 0.1);
-  --border-soft: rgba(120, 84, 10, 0.25);
-  --border-strong: rgba(120, 84, 10, 0.45);
-  --text-0: #241a0c;
-  --text-1: #3b2c17;
-  --text-2: #5c4a2c;
-  --text-muted: #7a6842;
-  --shadow-card: 0 10px 26px -14px rgba(60, 40, 10, 0.35), 0 2px 6px rgba(60, 40, 10, 0.15);
-  --shadow-pop: 0 24px 60px -24px rgba(60, 40, 10, 0.45);
-  /* در لایت، gold-glow رو کمی تیره‌تر می‌کنیم تا قابل‌دیدن باشد */
-  --gold-glow: rgba(180, 140, 30, 0.3);
+  --ink-0: #EEF2F6;
+  --ink-1: #E6ECF2;
+  --ink-2: #DBE4EC;
+  --ink-3: #CCD9E4;
+  --surface: rgba(16, 28, 40, 0.05);
+  --surface-strong: rgba(16, 28, 40, 0.09);
+  --glass-1: rgba(246, 249, 252, 0.72);
+  --glass-2: rgba(240, 245, 250, 0.78);
+  --glass-3: rgba(231, 238, 245, 0.8);
+  --glass-border: rgba(30, 52, 74, 0.13);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --hairline: rgba(30, 52, 72, 0.16);
+  --hairline-strong: rgba(20, 129, 121, 0.42);
+  --type-0: #17222E;
+  --type-1: #2F4356;
+  --type-2: #55697D;
+  --type-3: #7B8EA0;
+  --accent-100: #D3F4F0;
+  --accent-300: #1B9E94;   /* darkened for AA text contrast on light */
+  --accent-500: #15857D;
+  --accent-700: #0F655F;
+  --accent-glow: rgba(21, 133, 125, 0.22);
+  --phosphor: #148A5E;
+  --phosphor-d: #0F6E4B;
+  --fault: #C6373E;
+  --fault-d: #A32027;
+  --telemetry: #1F7E9C;
+  --telemetry-d: #186079;
+  --sage-dim: #5F7387;
+  --sage-dimmer: #7D8FA0;
+  --shadow-card: 0 10px 24px -14px rgba(25, 45, 65, 0.3), 0 2px 6px -3px rgba(25, 45, 65, 0.18);
+  --shadow-pop: 0 22px 50px -20px rgba(25, 45, 65, 0.36);
+  --edge-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 
 * {
@@ -87,8 +168,8 @@ body {
 body {
   margin: 0;
   background:
-    radial-gradient(1200px 800px at 15% -10%, rgba(139, 92, 246, 0.14), transparent 60%),
-    radial-gradient(1000px 700px at 110% 10%, rgba(201, 162, 39, 0.10), transparent 55%),
+    radial-gradient(1100px 700px at 85% -10%, rgba(53, 208, 197, 0.045), transparent 62%),
+    radial-gradient(900px 620px at -6% 108%, rgba(56, 96, 138, 0.07), transparent 60%),
     var(--bg-0);
   color: var(--text-0);
   font-family: var(--font-fa);
@@ -131,15 +212,16 @@ p {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
+  background: rgba(148, 171, 196, 0.22);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--gold-500);
+  background: rgba(148, 171, 196, 0.38);
 }
 
-/* ---------------- floating magic particles ---------------- */
+/* ---------------- floating magic particles (retired — wizarding legacy, JS nodes stay hidden) ---------------- */
 .sparkle-field {
+  display: none;
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -183,12 +265,12 @@ p {
   position: relative;
   padding: 24px;
   background:
-    linear-gradient(180deg, rgba(11, 8, 23, 0.55), rgba(11, 8, 23, 0.86)),
+    linear-gradient(180deg, rgba(8, 12, 18, 0.55), rgba(8, 12, 18, 0.86)),
     url('/static/img/hero-bg.jpg') center/cover no-repeat scroll;
 }
 html[data-theme="light"] .auth-shell {
   background:
-    linear-gradient(180deg, rgba(243, 239, 228, 0.72), rgba(243, 239, 228, 0.92)),
+    linear-gradient(180deg, rgba(230, 237, 244, 0.72), rgba(230, 237, 244, 0.92)),
     url('/static/img/hero-bg.jpg') center/cover no-repeat scroll;
 }
 @media (min-width: 921px) {
@@ -205,12 +287,13 @@ html[data-theme="light"] .auth-shell {
   z-index: 2;
   width: 100%;
   max-width: 420px;
-  background: linear-gradient(180deg, var(--bg-2), var(--bg-1));
-  border: 1px solid var(--border-soft);
+  background: var(--ink-2);
+  border: 1px solid var(--hairline);
   border-radius: var(--radius-lg);
-  padding: 34px 30px 28px;
-  box-shadow: var(--shadow-pop);
+  border-end-start-radius: var(--radius-md);
+  box-shadow: var(--shadow-pop), var(--edge-highlight);
   animation: card-rise var(--dur-slow) var(--ease-out) both;
+  padding: 34px 30px 28px;
   max-height: calc(100dvh - 48px);
   overflow-y: auto;
 }
@@ -228,7 +311,7 @@ html[data-theme="light"] .auth-shell {
 @keyframes card-rise {
   from {
     opacity: 0;
-    transform: translateY(22px) scale(.97);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -242,26 +325,15 @@ html[data-theme="light"] .auth-shell {
   margin: 0 auto 14px;
   display: block;
   border-radius: 50%;
-  filter: drop-shadow(0 0 18px var(--gold-glow));
-  animation: logo-breathe 4.5s ease-in-out infinite;
-}
-@keyframes logo-breathe {
-  0%,
-  100% {
-    filter: drop-shadow(0 0 12px var(--gold-glow));
-    transform: translateY(0);
-  }
-  50% {
-    filter: drop-shadow(0 0 26px var(--gold-glow));
-    transform: translateY(-3px);
-  }
+  filter: none;
+  box-shadow: 0 0 0 1px var(--glass-border), 0 10px 22px -14px rgba(0, 0, 0, 0.65);
 }
 
 .brand-title {
   text-align: center;
   font-family: var(--font-display);
-  font-size: 28px;
-  letter-spacing: .06em;
+  font-size: var(--fs-2xl);
+  letter-spacing: .04em;
   color: var(--gold-300);
   margin-bottom: 4px;
 }
@@ -279,7 +351,7 @@ html[data-theme="light"] .auth-shell {
 }
 .field label {
   display: block;
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   color: var(--text-2);
   margin-bottom: 6px;
   font-weight: 600;
@@ -290,10 +362,10 @@ textarea.input {
   width: 100%;
   padding: 12px 14px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-soft);
-  background: var(--surface);
+  border: 1px solid var(--hairline);
+  background: var(--ink-0);
   color: var(--text-0);
-  font-size: 14.5px;
+  font-size: var(--fs-md);
   font-family: inherit;
   transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), background var(--dur-fast);
   outline: none;
@@ -311,7 +383,7 @@ textarea.input {
 .input:focus {
   border-color: var(--gold-500);
   box-shadow: 0 0 0 3px var(--gold-glow);
-  background: var(--surface-strong);
+  background: var(--ink-1);
 }
 .input-wrap {
   position: relative;
@@ -348,7 +420,7 @@ textarea.input {
 
 /* ---------------- buttons ---------------- */
 .btn {
-  --btn-fg: #1a1024;
+  --btn-fg: #071E22;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -363,17 +435,17 @@ textarea.input {
   letter-spacing: .01em;
   color: var(--btn-fg);
   background: var(--gold-500);
-  box-shadow: 0 4px 14px -4px rgba(201, 162, 39, 0.55);
+  box-shadow: 0 4px 14px -4px var(--gold-glow);
   transition: transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out), filter var(--dur-fast);
   position: relative;
   overflow: hidden;
 }
 .btn:active {
-  transform: scale(.96);
+  transform: scale(.98);
 }
 .btn:hover {
   filter: brightness(1.08);
-  box-shadow: 0 6px 20px -4px rgba(201, 162, 39, 0.65);
+  box-shadow: 0 6px 20px -4px var(--gold-glow);
 }
 .btn:disabled {
   opacity: .5;
@@ -394,49 +466,54 @@ textarea.input {
 .btn-block {
   width: 100%;
 }
+/* accent button keeps AA contrast when the accent darkens in light mode */
+html[data-theme="light"] .btn:not(.btn-ghost) {
+  --btn-fg: #F2F8FB;
+}
 .btn-ghost {
   background: transparent;
   color: var(--text-1);
-  border: 1px solid var(--border-soft);
+  border: 1px solid var(--hairline);
   box-shadow: none;
 }
 .btn-ghost:hover {
-  border-color: var(--gold-500);
-  color: var(--gold-300);
+  border-color: var(--ember-500);
+  color: var(--ember-300);
 }
 
 .btn-primary {
-  background: linear-gradient(180deg, var(--gold-300), var(--gold-500));
+  background: var(--ember-500);
+  box-shadow: var(--edge-highlight), 0 1px 0 rgba(0, 0, 0, .25);
 }
 .btn-amethyst {
-  background: linear-gradient(180deg, #a67bfa, var(--amethyst-d));
-  --btn-fg: #fff;
-  box-shadow: 0 4px 14px -4px rgba(139, 92, 246, 0.55);
+  background: var(--sage-dimmer);
+  --btn-fg: #eef4f0;
+  box-shadow: var(--edge-highlight), 0 1px 0 rgba(0, 0, 0, .25);
 }
 .btn-emerald {
-  background: linear-gradient(180deg, #46d6a0, var(--emerald-d));
-  --btn-fg: #04231a;
-  box-shadow: 0 4px 14px -4px rgba(47, 191, 133, 0.5);
+  background: var(--phosphor-d);
+  --btn-fg: #eafff5;
+  box-shadow: var(--edge-highlight), 0 1px 0 rgba(0, 0, 0, .25);
 }
 .btn-crimson {
-  background: linear-gradient(180deg, #ea6178, var(--crimson-d));
-  --btn-fg: #2a0810;
-  box-shadow: 0 4px 14px -4px rgba(217, 69, 95, 0.5);
+  background: var(--fault-d);
+  --btn-fg: #ffecec;
+  box-shadow: var(--edge-highlight), 0 1px 0 rgba(0, 0, 0, .25);
 }
 .btn-azure {
-  background: linear-gradient(180deg, #7bbdf5, var(--azure-d));
-  --btn-fg: #071d33;
-  box-shadow: 0 4px 14px -4px rgba(77, 159, 236, 0.5);
+  background: var(--telemetry-d);
+  --btn-fg: #eaf7fb;
+  box-shadow: var(--edge-highlight), 0 1px 0 rgba(0, 0, 0, .25);
 }
 
 .btn-icon {
   padding: 10px;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
 }
 .btn-sm {
   padding: 7px 12px;
   font-size: 12.5px;
-  border-radius: 9px;
+  border-radius: var(--radius-xs);
 }
 
 .link-btn {
@@ -453,8 +530,9 @@ textarea.input {
   text-decoration: underline;
 }
 
-/* ---------------- ripple ---------------- */
+/* ---------------- ripple (retired: aperrf uses no click ripples) ---------------- */
 .ripple {
+  display: none;
   position: absolute;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.5);
@@ -481,12 +559,15 @@ textarea.input {
   max-width: 340px;
 }
 .toast {
-  background: var(--bg-2);
-  border: 1px solid var(--border-soft);
+  background: var(--glass-2);
+  backdrop-filter: var(--panel-blur);
+  -webkit-backdrop-filter: var(--panel-blur);
+  border: 1px solid var(--glass-border);
+  border-inline-start: 3px solid var(--telemetry);
   color: var(--text-0);
   padding: 12px 14px;
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-pop), var(--glass-highlight);
   display: flex;
   align-items: flex-start;
   gap: 10px;
@@ -499,7 +580,7 @@ textarea.input {
 @keyframes toast-in {
   from {
     opacity: 0;
-    transform: translateX(24px) scale(.96);
+    transform: translateX(10px);
   }
   to {
     opacity: 1;
@@ -509,17 +590,17 @@ textarea.input {
 @keyframes toast-out {
   to {
     opacity: 0;
-    transform: translateX(24px) scale(.94);
+    transform: translateX(10px);
   }
 }
 .toast.success {
-  border-color: rgba(47, 191, 133, 0.5);
+  border-inline-start-color: var(--phosphor);
 }
 .toast.error {
-  border-color: rgba(217, 69, 95, 0.5);
+  border-inline-start-color: var(--fault);
 }
 .toast.info {
-  border-color: rgba(77, 159, 236, 0.5);
+  border-inline-start-color: var(--telemetry);
 }
 .toast-icon {
   flex-shrink: 0;
@@ -578,8 +659,8 @@ textarea.input {
 .switch .track {
   position: absolute;
   inset: 0;
-  background: var(--surface-strong);
-  border: 1px solid var(--border-soft);
+  background: var(--ink-0);
+  border: 1px solid var(--hairline);
   border-radius: 999px;
   cursor: pointer;
   transition: background var(--dur-fast);
@@ -595,12 +676,12 @@ textarea.input {
   transition: transform var(--dur-mid) var(--ease-spring), background var(--dur-fast);
 }
 .switch input:checked+.track {
-  background: var(--gold-glow);
-  border-color: var(--gold-500);
+  background: color-mix(in srgb, var(--phosphor) 26%, transparent);
+  border-color: var(--phosphor-d);
 }
 .switch input:checked+.track .thumb {
   transform: translateX(18px);
-  background: var(--gold-500);
+  background: var(--phosphor);
 }
 [dir="rtl"] .switch input:checked+.track .thumb {
   transform: translateX(-18px);
@@ -705,7 +786,7 @@ textarea.input {
   }
 }
 
-/* ---------------- floating telegram contact ---------------- */
+/* ---------------- floating telegram contact — shared glass plate ---------------- */
 .telegram-fab {
   position: fixed;
   bottom: 20px;
@@ -717,30 +798,27 @@ textarea.input {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #229ED9;
-  box-shadow: 0 6px 20px -4px rgba(34, 158, 217, 0.55), 0 0 0 4px rgba(34, 158, 217, 0.12);
-  transition: transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-fast) var(--ease-out);
-  animation: fab-breathe 3.2s ease-in-out infinite;
+  background: var(--glass-2);
+  backdrop-filter: var(--panel-blur);
+  -webkit-backdrop-filter: var(--panel-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-card), var(--glass-highlight);
+  animation: none;
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), background var(--dur-fast), border-color var(--dur-fast);
 }
 .telegram-fab svg {
   width: 28px;
   height: 28px;
+  filter: saturate(0.9);
 }
 .telegram-fab:hover {
-  transform: scale(1.08);
-  box-shadow: 0 8px 26px -4px rgba(34, 158, 217, 0.7), 0 0 0 6px rgba(34, 158, 217, 0.16);
+  transform: scale(1.06);
+  background: var(--glass-3);
+  border-color: color-mix(in srgb, var(--accent-500) 45%, transparent);
+  box-shadow: 0 10px 26px -12px var(--accent-glow), var(--glass-highlight);
 }
 .telegram-fab:active {
   transform: scale(.96);
-}
-@keyframes fab-breathe {
-  0%,
-  100% {
-    box-shadow: 0 6px 20px -4px rgba(34, 158, 217, 0.55), 0 0 0 4px rgba(34, 158, 217, 0.12);
-  }
-  50% {
-    box-shadow: 0 6px 20px -4px rgba(34, 158, 217, 0.7), 0 0 0 8px rgba(34, 158, 217, 0.05);
-  }
 }
 @media (max-width: 560px) {
   .telegram-fab {
@@ -754,3 +832,356 @@ textarea.input {
     height: 24px;
   }
 }
+/* ---------------- reduced motion (accessibility) ---------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* ==================================================================
+   P3 — "auth-console": Login / Setup visual system
+   Scoped to body.auth-console only. The generic .auth-shell /
+   .auth-card rules above stay untouched for the status page (P4).
+   Navy canvas + static transmission-ring / ops-grid pattern (CSS
+   only), restrained glass panel, cyan used solely for focus/edge.
+   ================================================================== */
+
+body.auth-console {
+  min-height: 100dvh;
+}
+body.auth-console .auth-shell {
+  background-color: var(--ink-0);
+  background-image:
+    radial-gradient(680px 680px at 50% -160px,
+      transparent 0 259px,
+      color-mix(in srgb, var(--accent-300) 5%, transparent) 259px 260px,
+      transparent 260px 459px,
+      color-mix(in srgb, var(--accent-300) 3.5%, transparent) 459px 460px,
+      transparent 460px 679px,
+      color-mix(in srgb, var(--accent-300) 2.5%, transparent) 679px 680px,
+      transparent 680px),
+    linear-gradient(color-mix(in srgb, var(--type-1) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--type-1) 3%, transparent) 1px, transparent 1px);
+  background-size: auto, 48px 48px, 48px 48px;
+}
+html[data-theme="light"] body.auth-console .auth-shell {
+  background-color: var(--ink-0);
+  background-image:
+    radial-gradient(680px 680px at 50% -160px,
+      transparent 0 259px,
+      color-mix(in srgb, var(--accent-700) 10%, transparent) 259px 260px,
+      transparent 260px 459px,
+      color-mix(in srgb, var(--accent-700) 8%, transparent) 459px 460px,
+      transparent 460px 679px,
+      color-mix(in srgb, var(--accent-700) 6%, transparent) 679px 680px,
+      transparent 680px),
+    linear-gradient(color-mix(in srgb, var(--type-2) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--type-2) 5%, transparent) 1px, transparent 1px);
+  background-size: auto, 48px 48px, 48px 48px;
+}
+
+/* glass console panel — uniform 14px radius, cool hairline, soft depth */
+body.auth-console .auth-card {
+  background: var(--glass-2);
+  backdrop-filter: var(--panel-blur);
+  -webkit-backdrop-filter: var(--panel-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  border-end-start-radius: var(--radius-md);
+  box-shadow: var(--shadow-pop), var(--glass-highlight);
+}
+/* single top-edge cyan center-fade hairline — the only accent stroke */
+body.auth-console .auth-card::before {
+  content: "";
+  position: absolute;
+  inset-inline: 14%;
+  inset-block-start: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent-500) 55%, transparent), transparent);
+  pointer-events: none;
+}
+
+/* compact brand block (text nodes untouched) */
+body.auth-console .auth-logo {
+  width: 60px;
+  height: 60px;
+  box-shadow: 0 0 0 1px var(--glass-border), 0 10px 22px -14px rgba(0, 0, 0, 0.65);
+}
+body.auth-console .brand-title {
+  color: var(--text-0);
+}
+
+/* LTR only: field labels become quiet mono captions; RTL Persian keeps Vazirmatn verbatim */
+html[dir="ltr"] body.auth-console .field label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+/* keyboard focus rings — cyan, action controls only */
+body.auth-console .btn:focus-visible,
+body.auth-console .icon-btn:focus-visible,
+body.auth-console .lang-toggle button:focus-visible,
+body.auth-console .input-toggle:focus-visible {
+  outline: 2px solid var(--accent-500);
+  outline-offset: 2px;
+}
+
+/* no decorative breathing on the contact FAB inside the console */
+body.auth-console .telegram-fab {
+  animation: none;
+}
+
+/* ==================================================================
+   P4 — "link-dossier": public Subscription Status page
+   Scoped to body.status-page (layered on the P3 auth-console shell).
+   Presentation only — reuses existing --ink/--glass/--accent/hairline/
+   radius/shadow/motion tokens, no new color system, no calculations.
+   ================================================================== */
+
+/* dossier plate — slightly wider than the login card */
+body.status-page .auth-card {
+  max-width: 480px;
+}
+body.status-page #statusContent .bar {
+  height: 10px;
+  border-radius: var(--radius-sm);
+}
+
+/* head — identity block: config name + UID + state chip */
+body.status-page .ds-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 14px;
+  background: var(--glass-3);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card), var(--glass-highlight);
+  min-width: 0;
+}
+body.status-page .ds-id {
+  min-width: 0;
+}
+body.status-page .ds-name {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--text-0);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+body.status-page .ds-uid {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 4px;
+  min-width: 0;
+}
+body.status-page .ds-state {
+  flex-shrink: 0;
+}
+
+/* quiet technical labels; mono captions in LTR, verbatim Vazirmatn in RTL */
+body.status-page .ds-label,
+body.status-page .ds-k {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-2);
+}
+html[dir="ltr"] body.status-page .ds-label,
+html[dir="ltr"] body.status-page .ds-k {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+body.status-page .ds-k {
+  color: var(--text-muted);
+}
+body.status-page .mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+/* UID reads as a latin token in both locales */
+body.status-page .ds-v {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-size: var(--fs-sm);
+  letter-spacing: .04em;
+  color: var(--accent-300);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* layered instrument panels — uniform 14px glass */
+body.status-page .ds-panel {
+  background: var(--glass-2);
+  backdrop-filter: var(--panel-blur);
+  -webkit-backdrop-filter: var(--panel-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card), var(--glass-highlight);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 12px;
+  min-width: 0;
+}
+body.status-page .ds-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+body.status-page .ds-grid > .ds-panel {
+  margin-top: 0;
+}
+body.status-page .ds-panel + .ds-grid {
+  margin-top: 12px;
+}
+@media (max-width: 420px) {
+  body.status-page .ds-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  body.status-page .ds-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  body.status-page .ds-grid > .ds-panel + .ds-panel {
+    margin-top: 0;
+  }
+}
+
+/* usage meter — cyan fill inside the existing ticked navy well */
+body.status-page .progress-accent > span {
+  background: var(--accent-500);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+body.status-page .ds-meter-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: var(--fs-sm);
+  color: var(--text-1);
+}
+body.status-page .ds-meter-foot .pct {
+  font-size: var(--fs-xs);
+  color: var(--accent-300);
+}
+
+/* readouts */
+body.status-page .ds-value {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--text-0);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+body.status-page .ds-sub {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding-block-start: 8px;
+  border-block-start: 1px solid var(--hairline);
+  font-size: var(--fs-xs);
+  color: var(--text-2);
+}
+body.status-page .ds-sub .mono {
+  font-size: var(--fs-sm);
+  color: var(--text-1);
+}
+
+/* status chip — restrained cyan when live (dashboard pills untouched);
+   disabled keeps the existing fault token. No glow, no pulse here. */
+body.status-page .pill-on {
+  background: color-mix(in srgb, var(--accent-500) 14%, transparent);
+  color: var(--accent-300);
+  border: 1px solid color-mix(in srgb, var(--accent-500) 35%, transparent);
+}
+body.status-page .pill-on .pill-dot::after {
+  animation: none;
+  border: none;
+}
+
+/* Telegram FAB — now matches the shared glass base rule (theme.css);
+   icon, svg, href, placement remain untouched on this page. */
+
+/* ==================================================================
+   P5 — shared UI details ("instrument polish")
+   Focus rings, native input tinting, select affordance, disabled
+   states — applied across the whole console. Existing components
+   keep their current look; these are additive, token-only rules.
+   ================================================================== */
+
+:root {
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%237A8FA1' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
+}
+html[data-theme="light"] {
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%2355697D' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
+}
+
+/* consistent keyboard focus across the whole console */
+:where(a, button, input, select, textarea, label.switch, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent-500);
+  outline-offset: 2px;
+}
+
+/* native controls pick up the cyan system color where used */
+input,
+select,
+textarea {
+  accent-color: var(--accent-500);
+}
+
+/* select — custom chevron, logical padding so RTL mirrors cleanly */
+select.input {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: var(--select-arrow);
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-inline-end: 38px;
+}
+html[dir="rtl"] select.input {
+  background-position: left 14px center;
+}
+select.input:focus {
+  background-image: var(--select-arrow);
+}
+
+/* readable disabled states */
+.input:disabled,
+select.input:disabled,
+textarea.input:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  background: var(--ink-0);
+}
+.icon-btn:disabled,
+.btn:disabled {
+  color: var(--text-muted);
+}
+.switch input:disabled + .track {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+/* semantic text tones — replaces leftover inline gold/emerald styles */
+.tx-accent { color: var(--accent-300); }
+.tx-ok { color: var(--phosphor); }
+.tx-link { color: var(--telemetry); text-decoration: underline; }
+.tx-danger { color: var(--fault); }

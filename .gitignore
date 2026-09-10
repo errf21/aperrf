@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Local runtime data
+data/
+
+# OS / editor
+.DS_Store
+*.swp
+*.swo

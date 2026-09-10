@@ -11,13 +11,17 @@
   STANNG.api('/api/me').then(me => {
     if (!me.logged_in) { window.location.href = '/login'; return; }
     document.getElementById('appVersion').textContent = me.app_version || '';
-    document.getElementById('otaCurrent').textContent = (me.settings && me.settings.app_version) || me.app_version;
+    document.getElementById('panelVersionChip').textContent = me.app_version || '';
     if (me.settings) {
       document.getElementById('settingPublicDomain').value = me.settings.public_domain || '';
       document.getElementById('settingKeepAlive').checked = me.settings.keep_alive !== false;
       document.getElementById('settingFingerprint').value = me.settings.default_fingerprint || 'chrome';
       document.getElementById('settingAlpn').value = me.settings.default_alpn || 'http/1.1';
       document.getElementById('settingSniOverride').value = me.settings.sni_override || '';
+      document.getElementById('settingLinkPrefix').value = me.settings.link_prefix || 'aperrf';
+      document.getElementById('settingNameVlWsTls').value = me.settings.link_name_vl_ws_tls || '';
+      document.getElementById('settingNameVmWsTls').value = me.settings.link_name_vm_ws_tls || '';
+      document.getElementById('settingNameVlXhttpTls').value = me.settings.link_name_vl_xhttp_tls || '';
       document.getElementById('settingFragmentEnabled').checked = me.settings.fragment_enabled !== false;
       document.getElementById('settingFragmentPackets').value = me.settings.fragment_packets || 'tlshello';
       document.getElementById('settingFragmentLength').value = me.settings.fragment_length || '10-30';
@@ -130,87 +134,6 @@
   setInterval(refreshStats, 8000);
   window.addEventListener('resize', () => renderTrafficChart(document.getElementById('trafficChart'), lastHourly));
 
-  // ---------------- OTA ----------------
-  let otaLatestKnown = null;
-
-  document.getElementById('otaCheckBtn').addEventListener('click', async () => {
-    const btn = document.getElementById('otaCheckBtn');
-    const updateBtn = document.getElementById('otaUpdateBtn');
-    const hint = document.getElementById('otaUpdateHint');
-    STANNG.setLoading(btn, true);
-    try {
-      const r = await STANNG.api('/api/ota/check');
-      const el = document.getElementById('otaResult');
-      if (r.update_available) {
-        el.innerHTML = `<span style="color:var(--gold-300)">${STANNG.t('dash_ota_available')} <b>${r.latest}</b></span> — <a href="${r.url}" target="_blank" style="color:var(--azure); text-decoration:underline;">GitHub</a>`;
-        STANNG.toast(STANNG.t('dash_ota_available') + ' ' + r.latest, 'info');
-        otaLatestKnown = r.latest;
-        updateBtn.style.display = '';
-        hint.style.display = '';
-      } else {
-        el.innerHTML = `<span style="color:var(--emerald)">${STANNG.t('dash_ota_uptodate')}</span>`;
-        STANNG.toast(STANNG.t('dash_ota_uptodate'), 'success');
-        otaLatestKnown = null;
-        updateBtn.style.display = 'none';
-        hint.style.display = 'none';
-      }
-    } catch (e) {
-      STANNG.toast(e.detail || 'error', 'error');
-    } finally {
-      STANNG.setLoading(btn, false);
-    }
-  });
-
-  document.getElementById('otaUpdateBtn').addEventListener('click', async () => {
-    const msg = STANNG.t('dash_ota_update_confirm').replace('{version}', otaLatestKnown || '');
-    if (!confirm(msg)) return;
-
-    const updateBtn = document.getElementById('otaUpdateBtn');
-    const checkBtn = document.getElementById('otaCheckBtn');
-    const el = document.getElementById('otaResult');
-    STANNG.setLoading(updateBtn, true);
-    checkBtn.disabled = true;
-
-    try {
-      const r = await STANNG.api('/api/ota/update', { method: 'POST' });
-      if (r.ok) {
-        el.innerHTML = `<span style="color:var(--gold-300)">${STANNG.t('dash_ota_updating')}</span>`;
-        STANNG.toast(STANNG.t('dash_ota_updating'), 'info', 8000);
-        waitForRestartThenReload();
-      } else {
-        el.innerHTML = `<span style="color:var(--emerald)">${STANNG.t('dash_ota_uptodate')}</span>`;
-        STANNG.toast(STANNG.t('dash_ota_uptodate'), 'success');
-        STANNG.setLoading(updateBtn, false);
-        checkBtn.disabled = false;
-      }
-    } catch (e) {
-      STANNG.toast(e.detail || 'error', 'error');
-      STANNG.setLoading(updateBtn, false);
-      checkBtn.disabled = false;
-    }
-  });
-
-  function waitForRestartThenReload() {
-    let attempts = 0;
-    const poll = setInterval(async () => {
-      attempts++;
-      try {
-        const res = await fetch('/health', { cache: 'no-store' });
-        if (res.ok) {
-          clearInterval(poll);
-          STANNG.toast(STANNG.t('dash_ota_done'), 'success', 3000);
-          setTimeout(() => window.location.reload(), 1200);
-        }
-      } catch (e) {
-        // still down / restarting — keep polling
-      }
-      if (attempts > 60) {
-        clearInterval(poll);
-        STANNG.toast(STANNG.t('dash_ota_timeout'), 'error', 8000);
-      }
-    }, 3000);
-  }
-
   document.getElementById('quickAddBtn').addEventListener('click', () => { showView('inbounds'); openInboundModal(); });
 
   // ---------------- inbounds ----------------
@@ -250,18 +173,18 @@
         <td data-label="${STANNG.t('inb_name')}"><b>${escapeHtml(ib.name)}</b><div class="small muted">${ib.note ? escapeHtml(ib.note) : ''}</div></td>
         <td data-label="${STANNG.t('inb_status')}">${statusPill}</td>
         <td data-label="${STANNG.t('inb_usage')}" style="min-width:160px;">
-          <div class="small">${quotaTxt}</div>
-          <div class="bar progress-gold" style="margin-top:4px;"><span style="width:${pct}%"></span></div>
+          <div class="small num">${quotaTxt}</div>
+          <div class="bar progress-accent"><span style="width:${pct}%"></span></div>
         </td>
-        <td data-label="${STANNG.t('inb_expire')}">${expireTxt}</td>
-        <td data-label="${STANNG.t('inb_max_conn')}">${st.active_connections}${ib.max_connections ? ' / ' + ib.max_connections : ''} <span class="small muted">${STANNG.t('inb_active_devices')}</span></td>
+        <td class="num" data-label="${STANNG.t('inb_expire')}">${expireTxt}</td>
+        <td class="num" data-label="${STANNG.t('inb_max_conn')}">${st.active_connections}${ib.max_connections ? ' / ' + ib.max_connections : ''} <span class="small muted">${STANNG.t('inb_active_devices')}</span></td>
         <td data-label="${STANNG.t('inb_actions')}">
           <div class="row-actions">
             <button class="icon-btn btn-sm" data-action="links" data-uid="${ib.uid}" title="${STANNG.t('inb_links')}"><svg width="15" height="15"><use href="#icon-qr"/></svg></button>
             <button class="icon-btn btn-sm" data-action="edit" data-uid="${ib.uid}" title="${STANNG.t('edit')}"><svg width="15" height="15"><use href="#icon-edit"/></svg></button>
             <button class="icon-btn btn-sm" data-action="reset" data-uid="${ib.uid}" title="${STANNG.t('inb_reset_usage')}"><svg width="15" height="15"><use href="#icon-refresh"/></svg></button>
             <button class="icon-btn btn-sm" data-action="regen" data-uid="${ib.uid}" title="${STANNG.t('inb_regenerate')}"><svg width="15" height="15"><use href="#icon-key"/></svg></button>
-            <button class="icon-btn btn-sm" data-action="delete" data-uid="${ib.uid}" title="${STANNG.t('delete')}" style="color:var(--crimson)"><svg width="15" height="15"><use href="#icon-trash"/></svg></button>
+            <button class="icon-btn btn-sm danger" data-action="delete" data-uid="${ib.uid}" title="${STANNG.t('delete')}"><svg width="15" height="15"><use href="#icon-trash"/></svg></button>
           </div>
         </td>`;
       tbody.appendChild(tr);
@@ -280,9 +203,9 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td data-label="${STANNG.t('inb_name')}"><b>${escapeHtml(ib.name)}</b></td>
-        <td data-label="${STANNG.t('dash_upload')}">${STANNG.fmtBytes(ib.used_up || 0)}</td>
-        <td data-label="${STANNG.t('dash_download')}">${STANNG.fmtBytes(ib.used_down || 0)}</td>
-        <td data-label="${STANNG.t('inb_usage')}">${STANNG.fmtBytes((ib.used_up || 0) + (ib.used_down || 0))}</td>`;
+        <td data-label="${STANNG.t('dash_upload')}" class="num">${STANNG.fmtBytes(ib.used_up || 0)}</td>
+        <td data-label="${STANNG.t('dash_download')}" class="num">${STANNG.fmtBytes(ib.used_down || 0)}</td>
+        <td data-label="${STANNG.t('inb_usage')}" class="num">${STANNG.fmtBytes((ib.used_up || 0) + (ib.used_down || 0))}</td>`;
       tbody.appendChild(tr);
     });
   }
@@ -476,6 +399,10 @@
       default_fingerprint: document.getElementById('settingFingerprint').value,
       default_alpn: document.getElementById('settingAlpn').value,
       sni_override: document.getElementById('settingSniOverride').value.trim(),
+      link_prefix: document.getElementById('settingLinkPrefix').value.trim() || 'aperrf',
+      link_name_vl_ws_tls: document.getElementById('settingNameVlWsTls').value.trim(),
+      link_name_vm_ws_tls: document.getElementById('settingNameVmWsTls').value.trim(),
+      link_name_vl_xhttp_tls: document.getElementById('settingNameVlXhttpTls').value.trim(),
       fragment_enabled: document.getElementById('settingFragmentEnabled').checked,
       fragment_packets: document.getElementById('settingFragmentPackets').value.trim() || 'tlshello',
       fragment_length: document.getElementById('settingFragmentLength').value.trim() || '10-30',

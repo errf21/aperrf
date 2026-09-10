@@ -1,20 +1,20 @@
 <div align="center">
 
-<img src="static/img/logo-square.png" width="110" alt="StanNG logo">
+<img src="static/img/logo-square.png" width="110" alt="aperrf logo">
 
-# ⚡ StanNG v1.5.5
+# ⚡ aperrf v1.5.5
 
 ### یک پنل تک‌سرویسهٔ VLESS با تم جادوگری  
 **A single‑service VLESS panel with a wizarding theme**
 
-> # ⚠️ **پنل StanNG رایگان و غیر قابل فروش است**
+> # ⚠️ **پنل aperrf رایگان و غیر قابل فروش است**
 >
 > هرگونه فروش این پنل ممنوع بوده و تخلف محسوب می‌شود.
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template)
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
 
-<img src="docs/screenshots/login.jpg" width="720" alt="StanNG login screen">
+<img src="docs/screenshots/login.jpg" width="720" alt="aperrf login screen">
 
 </div>
 
@@ -41,6 +41,10 @@
 | ⏱ **بیدارباش خودکار** — پینگ داخلی هر ۱۰ دقیقه |
 
 ---
+
+## 🆕 تغییرات نسخه ۱.۵.۶
+
+- ❌ **حذف کامل به‌روزرسانی درون‌اپلیکیشنی (OTA)** — چون این نسخه سفارشی‌سازی‌شده است، قابلیت دانلود و جایگزینی خودکار فایل‌ها از ریپازیتوری بالادستی (دکمه «به‌روزرسانی پنل» و مسیرهای `/api/ota/*`) به‌طور عمدی حذف شد. داده‌های کاربران، تنظیمات و سایر عملکردها دست‌نخورده باقی می‌مانند.
 
 ## 🆕 تغییرات نسخه ۱.۵.۵
 
@@ -99,8 +103,8 @@
 
 ### 💻 اجرای محلی
 ```bash
-git clone https://github.com/<your-username>/StanNG.git
-cd StanNG
+git clone https://github.com/<your-username>/aperrf.git
+cd aperrf
 pip install -r requirements.txt
 python main.py
 # → http://localhost:8000/setup
@@ -166,4 +170,4 @@ python main.py
 
 ---
 
-<div align="center">**StanNG** — ساده، سبک، و جادویی 🧙‍♂️</div>
+<div align="center">**aperrf** — ساده، سبک، و جادویی 🧙‍♂️</div>

@@ -1,8 +1,10 @@
 /* ===========================================================
    StanNG — Local, self-hosted font faces (no external CDN calls)
    Vazirmatn: Persian/Arabic + Latin, variable-weight family
-   Cinzel / MedievalSharp: decorative headline fonts for the
-   "wizarding academy" theme (Latin headings only)
+   Space Grotesk — aperrf UI/display voice
+   IBM Plex Mono — aperrf telemetry/numeric voice
+   (Cinzel & MedievalSharp assets retained on disk but no longer
+   imported — see files still present under /static/fonts/)
    =========================================================== */
 
 @font-face {
@@ -52,22 +54,17 @@
 }
 
 @font-face {
-  font-family: 'Cinzel';
-  src: url('/static/fonts/Cinzel-Regular.ttf') format('truetype');
+  font-family: 'Space Grotesk';
+  src: url('/static/fonts/SpaceGrotesk%5Bwght%5D.ttf') format('truetype-variations');
+  font-weight: 300 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/static/fonts/IBMPlexMono-Regular.ttf') format('truetype');
   font-weight: 400; font-style: normal; font-display: swap;
 }
 @font-face {
-  font-family: 'Cinzel';
-  src: url('/static/fonts/Cinzel-Bold.ttf') format('truetype');
-  font-weight: 700; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'Cinzel';
-  src: url('/static/fonts/Cinzel-Black.ttf') format('truetype');
-  font-weight: 900; font-style: normal; font-display: swap;
-}
-@font-face {
-  font-family: 'MedievalSharp';
-  src: url('/static/fonts/MedievalSharp-Regular.ttf') format('truetype');
-  font-weight: 400; font-style: normal; font-display: swap;
+  font-family: 'IBM Plex Mono';
+  src: url('/static/fonts/IBMPlexMono-SemiBold.ttf') format('truetype');
+  font-weight: 600; font-style: normal; font-display: swap;
 }

@@ -5,7 +5,7 @@
    =========================================================== */
 window.I18N = {
   // ---- brand / generic ----
-  brand_name: { fa: 'StanNG', en: 'StanNG' },
+  brand_name: { fa: 'aperrf', en: 'aperrf' },
   brand_tagline: { fa: 'دروازه‌ی نامرئی به دنیای شبکه', en: 'The invisible gateway to the wizarding net' },
   loading: { fa: 'در حال بارگذاری...', en: 'Loading...' },
   save: { fa: 'ذخیره', en: 'Save' },
@@ -36,7 +36,7 @@ window.I18N = {
   setup_username_hint: { fa: 'فقط حروف انگلیسی، عدد و زیرخط (۳ تا ۳۲ کاراکتر)', en: 'Letters, numbers, underscore only (3-32 chars)' },
   setup_password_hint: { fa: 'حداقل ۶ کاراکتر', en: 'At least 6 characters' },
   setup_mismatch: { fa: 'رمزهای عبور یکسان نیستند', en: 'Passwords do not match' },
-  setup_done: { fa: 'حساب شما ساخته شد! خوش آمدید 🪄', en: 'Account created! Welcome 🪄' },
+  setup_done: { fa: 'حساب شما ساخته شد! خوش آمدید', en: 'Account created! Welcome' },
 
   // ---- login ----
   login_title: { fa: 'ورود به پنل', en: 'Panel Login' },
@@ -50,6 +50,9 @@ window.I18N = {
   nav_dashboard: { fa: 'داشبورد', en: 'Dashboard' },
   nav_inbounds: { fa: 'کاربران / اینباندها', en: 'Inbounds' },
   nav_traffic: { fa: 'ترافیک', en: 'Traffic' },
+  nav_grp_monitor: { fa: 'پایش', en: 'Monitor' },
+  nav_grp_network: { fa: 'شبکه', en: 'Network' },
+  nav_grp_system: { fa: 'سیستم', en: 'System' },
   // حذف nav_cleanip
   nav_security: { fa: 'امنیت', en: 'Security' },
   nav_settings: { fa: 'تنظیمات', en: 'Settings' },
@@ -57,7 +60,7 @@ window.I18N = {
   nav_support: { fa: 'پشتیبانی تلگرام', en: 'Telegram Support' },
 
   // ---- dashboard ----
-  dash_welcome: { fa: 'به قلمرو StanNG خوش آمدید', en: 'Welcome to the StanNG realm' },
+  dash_welcome: { fa: 'به قلمرو aperrf خوش آمدید', en: 'Welcome to the aperrf realm' },
   dash_cpu: { fa: 'پردازنده', en: 'CPU' },
   dash_ram: { fa: 'حافظه', en: 'Memory' },
   dash_uptime: { fa: 'زمان فعالیت', en: 'Uptime' },
@@ -69,16 +72,7 @@ window.I18N = {
   dash_download: { fa: 'دانلود', en: 'Download' },
   dash_hourly_chart: { fa: 'نمودار ترافیک ساعتی', en: 'Hourly Traffic Chart' },
   dash_quick_add: { fa: 'افزودن کاربر جدید', en: 'Add New User' },
-  dash_ota_title: { fa: 'به‌روزرسانی پنل', en: 'Panel Update' },
-  dash_ota_check: { fa: 'بررسی نسخه جدید', en: 'Check for updates' },
-  dash_ota_uptodate: { fa: 'شما از آخرین نسخه استفاده می‌کنید ✔', en: 'You are on the latest version ✔' },
-  dash_ota_available: { fa: 'نسخه جدید موجود است:', en: 'New version available:' },
-  dash_ota_update_btn: { fa: 'به‌روزرسانی همین الان', en: 'Update Now' },
-  dash_ota_update_hint: { fa: 'داده‌ی کاربران (data/db.json) هرگز در این فرآیند دست‌نخورده باقی می‌ماند.', en: 'User data (data/db.json) is never touched during this process.' },
-  dash_ota_update_confirm: { fa: 'پنل به نسخه {version} به‌روزرسانی و سرویس چند ثانیه ری‌استارت می‌شود. کاربران و تنظیمات شما حفظ می‌شوند. ادامه می‌دهید؟', en: 'The panel will update to version {version} and restart for a few seconds. Your users and settings are preserved. Continue?' },
-  dash_ota_updating: { fa: 'در حال دانلود و اعمال به‌روزرسانی... سرویس به‌زودی ری‌استارت می‌شود', en: 'Downloading and applying the update... the service will restart shortly' },
-  dash_ota_done: { fa: 'به‌روزرسانی با موفقیت انجام شد! در حال بارگذاری مجدد...', en: 'Update completed successfully! Reloading...' },
-  dash_ota_timeout: { fa: 'سرویس دیر بازگشت؛ لطفاً دستی صفحه را رفرش کنید', en: 'The service took too long to come back; please refresh manually' },
+  dash_status_title: { fa: 'وضعیت پنل', en: 'Panel Status' },
 
   // ---- inbounds ----
   inb_title: { fa: 'مدیریت کاربران', en: 'User Management' },
@@ -116,12 +110,12 @@ window.I18N = {
   },
   // حذف inb_link_nontls, inb_link_addresses
   inb_sub_note: {
-    fa: 'لینک اشتراک شامل دو کانفیگ نمایشی (وضعیت مصرف و پیام رایگان) به‌همراه کانفیگ TLS است.',
-    en: 'The subscription link includes two display-only configs (usage status and free message) plus the TLS config.'
+    fa: 'لینک اشتراک شامل یک کانفیگ نمایشی (وضعیت مصرف) به‌همراه کانفیگ TLS است.',
+    en: 'The subscription link includes one display-only config (usage status) plus the TLS config.'
   },
   inb_info_configs_note: {
-    fa: 'لینک اشتراک به‌صورت متن ساده (Plain Text) ارائه می‌شود و شامل موارد زیر است:\n📊 یک کانفیگ نمایشی برای نمایش وضعیت مصرف و اعتبار\n❤️ یک کانفیگ نمایشی با پیام «StanNG is Free ❤️»\n🔗 یک کانفیگ TLS واقعی برای اتصال',
-    en: 'The subscription link is provided as plain text and includes:\n📊 A display-only config showing usage and expiry status\n❤️ A display-only config with "StanNG is Free ❤️" message\n🔗 A real TLS config for connection'
+    fa: 'لینک اشتراک به‌صورت متن ساده (Plain Text) ارائه می‌شود و شامل موارد زیر است:\n— یک کانفیگ نمایشی برای نمایش وضعیت مصرف و اعتبار\n— یک کانفیگ TLS واقعی برای اتصال',
+    en: 'The subscription link is provided as plain text and includes:\n— A display-only config showing usage and expiry status\n— A real TLS config for connection'
   },
   inb_empty: { fa: 'هنوز کاربری اضافه نشده است', en: 'No users added yet' },
   inb_active_devices: { fa: 'دستگاه فعال', en: 'active devices' },
@@ -158,7 +152,6 @@ window.I18N = {
   settings_public_domain: { fa: 'دامنه عمومی (اختیاری، خالی = تشخیص خودکار)', en: 'Public Domain (optional, blank = auto-detect)' },
   settings_keepalive: { fa: 'سیستم بیدارباش (Keep-Alive)', en: 'Keep-Alive System' },
   settings_keepalive_hint: { fa: 'هر ۱۰ دقیقه یک بار پینگ داخلی برای جلوگیری از خواب رفتن سرویس', en: 'Pings itself every 10 minutes to prevent free-tier sleep' },
-  settings_ota_repo: { fa: 'مخزن گیت‌هاب برای آپدیت', en: 'GitHub Repo for Updates' },
   settings_sound: { fa: 'جلوه‌های صوتی', en: 'Sound Effects' },
   settings_theme: { fa: 'پوسته', en: 'Theme' },
   settings_theme_dark: { fa: 'تاریک', en: 'Dark' },
@@ -169,6 +162,12 @@ window.I18N = {
   settings_alpn: { fa: 'ALPN پیش‌فرض', en: 'Default ALPN' },
   settings_sni_override: { fa: 'SNI اختصاصی (Domain Fronting)', en: 'Custom SNI (Domain Fronting)' },
   settings_sni_override_hint: { fa: 'اگر خالی باشد، دامنه اصلی به‌عنوان SNI استفاده می‌شود.', en: 'If left blank, the main domain is used as SNI.' },
+  settings_link_prefix: { fa: 'پیشوند نام کانفیگ‌ها در اشتراک', en: 'Subscription Link Name Prefix' },
+  settings_link_prefix_hint: { fa: 'متنی که به‌جای «aperrf» در ابتدای نام کانفیگ‌های خروجی اشتراک استفاده می‌شود.', en: 'Text used instead of "aperrf" at the start of subscription config names.' },
+  settings_link_name_vl: { fa: 'نام اختصاصی کانفیگ VL-WS-TLS', en: 'Custom Name — VL-WS-TLS Config' },
+  settings_link_name_vm: { fa: 'نام اختصاصی کانفیگ VM-WS-TLS', en: 'Custom Name — VM-WS-TLS Config' },
+  settings_link_name_xh: { fa: 'نام اختصاصی کانفیگ VL-XHTTP-TLS', en: 'Custom Name — VL-XHTTP-TLS Config' },
+  settings_link_name_hint: { fa: 'در صورت خالی بودن، نام پیش‌فرض (پیشوند + نام کاربر) استفاده می‌شود.', en: 'If left blank, the default name (prefix + username) is used.' },
   settings_fragment: { fa: 'حالت Fragment (بایپس DPI)', en: 'Fragment Mode (DPI Bypass)' },
   settings_fragment_packets: { fa: 'Packets', en: 'Packets' },
   settings_fragment_length: { fa: 'Length', en: 'Length' },
@@ -181,6 +180,9 @@ window.I18N = {
   status_expiry: { fa: 'تاریخ انقضا', en: 'Expiry' },
   status_not_found: { fa: 'اشتراکی با این شناسه یافت نشد', en: 'No subscription found with this ID' },
   status_disabled: { fa: 'این اشتراک غیرفعال یا منقضی شده است', en: 'This subscription is disabled or expired' },
+  status_identifier: { fa: 'شناسه', en: 'Identifier' },
+  status_remaining: { fa: 'زمان باقی‌مانده', en: 'Time left' },
+  status_days: { fa: 'روز', en: 'days' },
 
   // ---- misc/tooltips ----
   tip_fragment: { fa: 'فرگمنت به دور زدن فیلترینگ DPI کمک می‌کند', en: 'Fragment helps bypass DPI-based filtering' },

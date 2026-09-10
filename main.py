@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-StanNG — a single-service VLESS-over-WebSocket panel, wizarding-academy themed.
-Version 1.5.5 — fully fixed: OTA, stats, traffic page, hourly chart, active connections (last_seen method).
+StanNG — a single-service VLESS-over-WebSocket panel (aperrf build).
+Version 1.5.6 — customized edition; built-in OTA / upstream self-update removed by design.
 """
 import asyncio
 import base64
@@ -32,14 +32,9 @@ import xray_manager
 from colo_map import describe_colo
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-APP_VERSION = "1.5.5"
-PANEL_NAME = "StanNG"
-TELEGRAM_CONTACT = "https://t.me/rvivl"
-OTA_REPO = "youdidking/stanngv2"
-OTA_HEADERS = {
-    "Accept": "application/vnd.github+json",
-    "User-Agent": f"StanNG-Panel/{APP_VERSION}",
-}
+APP_VERSION = "1.5.6"
+PANEL_NAME = "aperrf"
+TELEGRAM_CONTACT = "https://t.me/Espierz"
 SESSION_COOKIE = "stanng_session"
 SESSION_MAX_AGE = 60 * 60 * 24 * 7
 LOGIN_MAX_ATTEMPTS = 6
@@ -75,7 +70,7 @@ async def lifespan(app: FastAPI):
     await doh_http_client.aclose()
 
 
-app = FastAPI(title="StanNG", version=APP_VERSION, lifespan=lifespan)
+app = FastAPI(title="aperrf", version=APP_VERSION, lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
 
@@ -492,9 +487,11 @@ async def api_update_settings(request: Request, user: str = Depends(require_auth
     payload = await request.json()
     allowed = {
         "lang", "theme", "public_domain", "keep_alive",
-        "default_fingerprint", "default_alpn", "sni_override",
+        "default_fingerprint", "default_alpn", "sni_override", "link_prefix",
+        "link_name_vl_ws_tls", "link_name_vm_ws_tls", "link_name_vl_xhttp_tls",
         "fragment_enabled", "fragment_packets", "fragment_length", "fragment_interval",
     }
+    valid_names = {"link_prefix", "link_name_vl_ws_tls", "link_name_vm_ws_tls", "link_name_vl_xhttp_tls"}
     valid_fp = {"chrome", "ios", "firefox", "edge", "random"}
     valid_alpn = {"http/1.1", "h2,http/1.1", "h3,h2,http/1.1"}
 
@@ -506,6 +503,8 @@ async def api_update_settings(request: Request, user: str = Depends(require_auth
             if k == "default_fingerprint" and v not in valid_fp:
                 continue
             if k == "default_alpn" and v not in valid_alpn:
+                continue
+            if k in valid_names and (not isinstance(v, str) or len(v) > 64):
                 continue
             s[k] = v
 
@@ -650,9 +649,14 @@ def build_links(request: Request, db, ib) -> dict:
     fp = ib.get("fp") or (db.get("settings") or {}).get("default_fingerprint", "chrome")
     alpn = (db.get("settings") or {}).get("default_alpn", "http/1.1")
     sni = (db.get("settings") or {}).get("sni_override") or host
+    link_prefix = (db.get("settings") or {}).get("link_prefix") or PANEL_NAME
+    settings = db.get("settings") or {}
+    name_vl = (settings.get("link_name_vl_ws_tls") or "").strip() or f"{link_prefix}-{name}-VL-WS-TLS"
+    name_vm = (settings.get("link_name_vm_ws_tls") or "").strip() or f"{link_prefix}-{name}-VM-WS-TLS"
+    name_xh = (settings.get("link_name_vl_xhttp_tls") or "").strip() or f"{link_prefix}-{name}-VL-XHTTP-TLS"
     port_tls = 443
 
-    vl_ws_tls = f"vless://{uuidv}@{host}:{port_tls}?encryption=none&security=tls&type=ws&host={quote(host)}&path={quote('/vl-ws', safe='/')}&sni={quote(sni)}&fp={fp}&alpn={quote(alpn, safe=',/')}#{quote(f'StanNG-{name}-VL-WS-TLS')}"
+    vl_ws_tls = f"vless://{uuidv}@{host}:{port_tls}?encryption=none&security=tls&type=ws&host={quote(host)}&path={quote('/vl-ws', safe='/')}&sni={quote(sni)}&fp={fp}&alpn={quote(alpn, safe=',/')}#{quote(name_vl)}"
 
     def make_vmess(port, tls_mode, remark):
         vm_json = {
@@ -663,8 +667,8 @@ def build_links(request: Request, db, ib) -> dict:
         b64 = base64.b64encode(json.dumps(vm_json).encode()).decode()
         return f"vmess://{b64}"
     
-    vm_ws_tls = make_vmess(port_tls, "tls", f"StanNG-{name}-VM-WS-TLS")
-    vl_xh_tls = f"vless://{uuidv}@{host}:{port_tls}?encryption=none&security=tls&type=xhttp&host={quote(host)}&path={quote('/vl-xhttp', safe='/')}&sni={quote(sni)}&fp={fp}&alpn=h2#{quote(f'StanNG-{name}-VL-XHTTP-TLS')}"
+    vm_ws_tls = make_vmess(port_tls, "tls", name_vm)
+    vl_xh_tls = f"vless://{uuidv}@{host}:{port_tls}?encryption=none&security=tls&type=xhttp&host={quote(host)}&path={quote('/vl-xhttp', safe='/')}&sni={quote(sni)}&fp={fp}&alpn=h2#{quote(name_xh)}"
 
     st = inbound_status(ib)
     quota_gb = ib.get("quota_gb") or 0
@@ -672,15 +676,11 @@ def build_links(request: Request, db, ib) -> dict:
     quota_txt = f"{used_gb:.2f}/{quota_gb:g}GB" if quota_gb > 0 else f"{used_gb:.2f}GB used"
     days_txt = f"{st['days_left']}d left" if ib.get("expire_at") else "no expiry"
     status_remark = f"📊 {quota_txt} | ⏳ {days_txt}"
-    free_remark = "StanNG Multi-Protocol ❤️"
 
     dummy_uuid_status = "00000000-0000-0000-0000-000000000001"
-    dummy_uuid_credit = "00000000-0000-0000-0000-000000000002"
     dummy_link_status = f"vless://{dummy_uuid_status}@127.0.0.1:10001?encryption=none&security=none&type=tcp&headerType=none#{quote(status_remark)}"
-    dummy_link_credit = f"vless://{dummy_uuid_credit}@127.0.0.1:10002?encryption=none&security=none&type=tcp&headerType=none#{quote(free_remark)}"
     info_configs = [
         {"remark": status_remark, "link": dummy_link_status, "kind": "status"},
-        {"remark": free_remark, "link": dummy_link_credit, "kind": "credit"},
     ]
 
     all_links = [vl_ws_tls, vm_ws_tls, vl_xh_tls]
@@ -754,11 +754,11 @@ async def sub_plain(uid: str, request: Request):
         "Profile-Update-Interval": "1",
         "profile-update-interval": "1",
         # تغییر زیر اعمال شده است:
-        "Profile-Title": "base64:2YHZhNi02YUgU3Rhbk5HINeo2YXYs9in2YUg2YHZg9in2YUg2YHZhiDYsdmF2KfbjCDZiNiv2YbYqg==",
+        "Profile-Title": "base64:2YHZhNi02YUgYXBlcnJmINeo2YXYs9in2YUg2YHZg9in2YUg2YHZhiDYsdmF2KfbjCDZiNiv2YbYqg==",
         "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0",
-        "X-Powered-By": "StanNG",
+        "X-Powered-By": PANEL_NAME,
     }
     return Response(content=b64, media_type="text/plain", headers=headers)
 
@@ -783,7 +783,7 @@ async def sub_json(uid: str, request: Request):
         "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0",
-        "X-Powered-By": "StanNG",
+        "X-Powered-By": PANEL_NAME,
     }
     return JSONResponse({
         "name": ib["name"],
@@ -899,164 +899,6 @@ async def stats(request: Request, user: str = Depends(require_auth)):
         "active_connections": total_active,
         "location": describe_colo(colo),
     }
-
-
-def _ver_tuple(v):
-    parts = re.findall(r"\d+", v or "")
-    return tuple(int(p) for p in parts) if parts else (0,)
-
-
-async def _resolve_latest_release(repo: str, current: str, client: httpx.AsyncClient):
-    latest, url, zip_url = current, f"https://github.com/{repo}/releases", None
-    try:
-        r = await client.get(f"https://api.github.com/repos/{repo}/releases/latest", headers=OTA_HEADERS)
-        if r.status_code == 200:
-            data = r.json()
-            tag = (data.get("tag_name") or "").lstrip("v")
-            if tag:
-                latest = tag
-                url = data.get("html_url", url)
-                zip_url = data.get("zipball_url") or f"https://api.github.com/repos/{repo}/zipball/{data.get('tag_name')}"
-        else:
-            r2 = await client.get(f"https://api.github.com/repos/{repo}/tags", headers=OTA_HEADERS)
-            if r2.status_code == 200 and r2.json():
-                tags = r2.json()
-                if tags:
-                    tag_info = tags[0]
-                    tag_name = tag_info.get("name") or current
-                    latest = tag_name.lstrip("v")
-                    url = f"https://github.com/{repo}/releases/tag/{tag_name}"
-                    zip_url = tag_info.get("zipball_url") or f"https://api.github.com/repos/{repo}/zipball/{tag_name}"
-    except Exception:
-        pass
-    return latest, url, zip_url
-
-
-@app.get("/api/ota/check")
-async def api_ota_check(user: str = Depends(require_auth)):
-    current = APP_VERSION
-    latest = current
-    url = f"https://github.com/{OTA_REPO}/releases"
-    try:
-        async with httpx.AsyncClient(timeout=10, follow_redirects=True) as client:
-            latest, url, _zip = await _resolve_latest_release(OTA_REPO, current, client)
-    except Exception:
-        pass
-
-    update_available = _ver_tuple(latest) > _ver_tuple(current)
-    return {"current": current, "latest": latest, "update_available": update_available, "url": url}
-
-
-# ------------------------------------------------------------------ OTA self-update
-UPDATE_LOCK = asyncio.Lock()
-NEVER_TOUCH = {"data"}
-
-
-def _safe_extract_zip(zip_path: str, dest_dir: str):
-    import zipfile
-    with zipfile.ZipFile(zip_path) as zf:
-        names = zf.namelist()
-        if not names:
-            raise RuntimeError("empty archive")
-        root_prefix = names[0].split("/")[0] + "/"
-        for member in names:
-            if not member.startswith(root_prefix):
-                continue
-            rel = member[len(root_prefix):]
-            if not rel:
-                continue
-            target = os.path.normpath(os.path.join(dest_dir, rel))
-            if not target.startswith(os.path.normpath(dest_dir) + os.sep) and target != os.path.normpath(dest_dir):
-                raise RuntimeError(f"unsafe path in archive: {member}")
-            if member.endswith("/"):
-                os.makedirs(target, exist_ok=True)
-            else:
-                os.makedirs(os.path.dirname(target), exist_ok=True)
-                with zf.open(member) as src, open(target, "wb") as dst:
-                    dst.write(src.read())
-
-
-def _apply_staged_update(staged_dir: str, live_dir: str) -> list:
-    import shutil
-    touched = []
-    for entry in os.listdir(staged_dir):
-        if entry in NEVER_TOUCH:
-            continue
-        src = os.path.join(staged_dir, entry)
-        dst = os.path.join(live_dir, entry)
-        if os.path.isdir(src):
-            if os.path.isdir(dst):
-                shutil.rmtree(dst)
-            shutil.copytree(src, dst)
-        else:
-            shutil.copy2(src, dst)
-        touched.append(entry)
-    return touched
-
-
-@app.post("/api/ota/update")
-async def api_ota_update(request: Request, user: str = Depends(require_auth)):
-    if UPDATE_LOCK.locked():
-        raise HTTPException(409, "update-already-in-progress")
-
-    async with UPDATE_LOCK:
-        import tempfile
-        import shutil as _shutil
-
-        current = APP_VERSION
-        try:
-            async with httpx.AsyncClient(timeout=30, follow_redirects=True) as client:
-                latest, html_url, zip_url = await _resolve_latest_release(OTA_REPO, current, client)
-                if _ver_tuple(latest) <= _ver_tuple(current):
-                    return {"ok": False, "reason": "already-up-to-date", "current": current, "latest": latest}
-                if not zip_url:
-                    zip_url = f"https://api.github.com/repos/{OTA_REPO}/zipball/{latest}"
-
-                tmp_root = tempfile.mkdtemp(prefix="stanng_ota_")
-                zip_path = os.path.join(tmp_root, "release.zip")
-                staged_dir = os.path.join(tmp_root, "staged")
-                os.makedirs(staged_dir, exist_ok=True)
-
-                async with client.stream("GET", zip_url, headers=OTA_HEADERS) as resp:
-                    if resp.status_code != 200:
-                        raise HTTPException(502, f"download-failed-{resp.status_code}")
-                    with open(zip_path, "wb") as f:
-                        async for chunk in resp.aiter_bytes():
-                            f.write(chunk)
-
-            _safe_extract_zip(zip_path, staged_dir)
-
-            if not os.path.exists(os.path.join(staged_dir, "main.py")):
-                _shutil.rmtree(tmp_root, ignore_errors=True)
-                raise HTTPException(502, "downloaded-archive-missing-main.py")
-
-            staged_data = os.path.join(staged_dir, "data")
-            if os.path.isdir(staged_data):
-                _shutil.rmtree(staged_data, ignore_errors=True)
-
-            touched = _apply_staged_update(staged_dir, BASE_DIR)
-            if not touched:
-                _shutil.rmtree(tmp_root, ignore_errors=True)
-                raise HTTPException(502, "update-failed-no-files-copied")
-            _shutil.rmtree(tmp_root, ignore_errors=True)
-
-        except HTTPException:
-            raise
-        except Exception as e:
-            raise HTTPException(502, f"update-failed: {e}")
-
-        async def _delayed_restart():
-            await asyncio.sleep(1.5)
-            os._exit(87)
-
-        asyncio.create_task(_delayed_restart())
-        return {
-            "ok": True,
-            "previous_version": current,
-            "new_version": latest,
-            "files_updated": touched,
-            "restarting": True,
-        }
 
 
 if __name__ == "__main__":

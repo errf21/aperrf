@@ -104,13 +104,13 @@
     ctx.clearRect(0, 0, width, height);
 
     const styles = getComputedStyle(document.documentElement);
-    const goldColor = styles.getPropertyValue('--gold-500').trim() || '#c9a227';
-    const goldLight = styles.getPropertyValue('--gold-300').trim() || '#e6c765';
-    const azureColor = styles.getPropertyValue('--azure').trim() || '#4d9fec';
-    const emeraldColor = styles.getPropertyValue('--emerald').trim() || '#2fbf85';
-    const textColor = styles.getPropertyValue('--text-2').trim() || '#9d93bd';
-    const textMuted = styles.getPropertyValue('--text-muted').trim() || '#746a92';
-    const gridColor = styles.getPropertyValue('--border-soft').trim() || 'rgba(201,162,39,0.2)';
+    const goldColor = styles.getPropertyValue('--gold-500').trim() || '#35D0C5';
+    const goldLight = styles.getPropertyValue('--gold-300').trim() || '#5FDCCF';
+    const azureColor = styles.getPropertyValue('--azure').trim() || '#4CA6E8';
+    const emeraldColor = styles.getPropertyValue('--accent-300').trim() || '#5FDCCF';
+    const textColor = styles.getPropertyValue('--text-2').trim() || '#A9BCCB';
+    const textMuted = styles.getPropertyValue('--text-muted').trim() || '#7B8EA0';
+    const gridColor = styles.getPropertyValue('--border-soft').trim() || 'rgba(148,171,196,0.13)';
 
     const chartW = width - padding.left - padding.right;
     const chartH = height - padding.top - padding.bottom;
@@ -168,7 +168,7 @@
       if (upH > 0.5) {
         const gradUp = ctx.createLinearGradient(0, padding.top + chartH - upH, 0, padding.top + chartH);
         gradUp.addColorStop(0, goldLight);
-        gradUp.addColorStop(1, 'rgba(201,162,39,0.18)');
+        gradUp.addColorStop(1, 'rgba(53,208,197,0.18)');
         ctx.fillStyle = gradUp;
         roundRect(ctx, cx - barW - 1, padding.top + chartH - upH, barW, upH, 2.5);
         ctx.fill();
@@ -177,7 +177,7 @@
       if (downH > 0.5) {
         const gradDown = ctx.createLinearGradient(0, padding.top + chartH - downH, 0, padding.top + chartH);
         gradDown.addColorStop(0, azureColor);
-        gradDown.addColorStop(1, 'rgba(77,159,236,0.18)');
+        gradDown.addColorStop(1, 'rgba(76,166,232,0.18)');
         ctx.fillStyle = gradDown;
         roundRect(ctx, cx + 1, padding.top + chartH - downH, barW, downH, 2.5);
         ctx.fill();
@@ -218,8 +218,8 @@
     ctx.strokeStyle = emeraldColor;
     ctx.lineWidth = 2;
     ctx.lineJoin = 'round';
-    ctx.shadowColor = 'rgba(47,191,133,0.45)';
-    ctx.shadowBlur = 6;
+    ctx.shadowColor = 'rgba(53,208,197,0.22)';
+    ctx.shadowBlur = 4;
     ctx.stroke();
     ctx.shadowBlur = 0;
 

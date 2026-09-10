@@ -4,21 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>{{ panel_name }} · Status</title>
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon-aperrf.svg">
 <link rel="icon" href="/static/img/favicon-32.png">
 <link rel="apple-touch-icon" href="/static/img/favicon-180.png">
 <link rel="stylesheet" href="/static/css/fonts.css">
 <link rel="stylesheet" href="/static/css/theme.css">
 <link rel="stylesheet" href="/static/css/dashboard.css">
 </head>
-<body>
+<body class="auth-console status-page">
 {% include "_icons.html" %}
-<a class="telegram-fab" href="https://t.me/rvivl" target="_blank" rel="noopener" title="پشتیبانی تلگرام / Telegram Support">
+<a class="telegram-fab" href="https://t.me/Espierz" target="_blank" rel="noopener" title="پشتیبانی تلگرام / Telegram Support">
   <svg><use href="#icon-telegram"/></svg>
 </a>
 <div class="auth-shell">
-  <div class="sparkle-field"></div>
-  <div class="auth-card" style="max-width:460px;">
-    <img class="auth-logo" src="/static/img/logo-square.png" alt="StanNG">
+  <div class="auth-card">
+    <img class="auth-logo" src="/static/img/logo-aperrf.svg" alt="aperrf">
     <div class="brand-title" data-i18n="status_page_title">وضعیت اشتراک</div>
     <div id="statusContent" class="mt-20">
       <div class="text-center muted" data-i18n="loading">در حال بارگذاری...</div>
@@ -61,24 +61,33 @@ function render() {
     ? `<span class="pill pill-on"><span class="pill-dot"></span>${STANNG.t('active')}</span>`
     : `<span class="pill pill-off"><span class="pill-dot"></span>${STANNG.t('status_disabled')}</span>`;
   const expiry = d.expire_at ? new Date(d.expire_at * 1000).toLocaleDateString(STANNG.getLang() === 'fa' ? 'fa-IR' : 'en-US') : STANNG.t('unlimited');
+  const timeLeft = (d.expire_at && d.days_left != null)
+    ? `<div class="ds-sub"><span>${STANNG.t('status_remaining')}</span><span class="mono">${d.days_left} ${STANNG.t('status_days')}</span></div>`
+    : '';
 
   el.innerHTML = `
-    <div class="text-center mb-16" style="font-size:17px; font-weight:700;">${d.name}</div>
-    <div class="text-center mb-16">${statusPill}</div>
-    <div class="field">
-      <label>${STANNG.t('status_usage')}</label>
-      <div class="bar progress-gold" style="height:10px;"><span style="width:${pct}%"></span></div>
-      <div class="small muted mt-8 text-center">${quotaTxt}</div>
+    <div class="ds-head">
+      <div class="ds-id">
+        <div class="ds-name">${d.name}</div>
+        <div class="ds-uid"><span class="ds-k">${STANNG.t('status_identifier')}</span><span class="ds-v mono">${uid}</span></div>
+      </div>
+      <div class="ds-state">${statusPill}</div>
     </div>
-    <div class="grid" style="grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;">
-      <div class="win stat-card" style="padding:12px;">
-        <div class="label small">${STANNG.t('status_devices')}</div>
-        <div class="value" style="font-size:18px;">${d.active_connections}${d.max_connections ? ' / ' + d.max_connections : ''}</div>
-      </div>
-      <div class="win stat-card" style="padding:12px;">
-        <div class="label small">${STANNG.t('status_expiry')}</div>
-        <div class="value" style="font-size:14px;">${expiry}</div>
-      </div>
+    <section class="ds-panel">
+      <div class="ds-label">${STANNG.t('status_usage')}</div>
+      <div class="bar progress-accent"><span style="width:${pct}%"></span></div>
+      <div class="ds-meter-foot"><span>${quotaTxt}</span><span class="mono pct">${Math.round(pct)}%</span></div>
+    </section>
+    <div class="ds-grid">
+      <section class="ds-panel">
+        <div class="ds-label">${STANNG.t('status_expiry')}</div>
+        <div class="ds-value">${expiry}</div>
+        ${timeLeft}
+      </section>
+      <section class="ds-panel">
+        <div class="ds-label">${STANNG.t('status_devices')}</div>
+        <div class="ds-value mono">${d.active_connections}${d.max_connections ? ' / ' + d.max_connections : ''}</div>
+      </section>
     </div>
   `;
 }

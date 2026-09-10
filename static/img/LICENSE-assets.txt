@@ -4,3 +4,8 @@ AI image model. No third-party trademarked logos, crests, or characters were
 used or referenced. You are free to use, modify, and redistribute these
 images as part of the StanNG project under the same license as the rest of
 this repository (MIT — see /LICENSE).
+
+2026-09 aperrf rebrand: logo-aperrf.svg / favicon-aperrf.svg authored as original
+flat vector work (aperture-transmitter mark, MIT-licensed with this repo);
+favicon-32.png / favicon-180.png regenerated from that mark. logo-square.png and
+hero-bg.jpg remain on disk as legacy StanNG-era assets (no longer referenced).
