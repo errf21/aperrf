@@ -71,12 +71,11 @@
 <script src="/static/js/common.js"></script>
 <script>
 document.querySelectorAll('.lang-toggle button').forEach(btn => {
-  btn.addEventListener('click', () => { STANNG.setLang(btn.dataset.lang); STANNG.playSfx('toggle', 0.3); });
+  btn.addEventListener('click', () => { STANNG.setLang(btn.dataset.lang); });
 });
 document.getElementById('themeToggle').addEventListener('click', () => {
   const next = STANNG.getTheme() === 'dark' ? 'light' : 'dark';
   STANNG.setTheme(next);
-  STANNG.playSfx('toggle', 0.3);
 });
 document.querySelectorAll('[data-toggle-for]').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -105,9 +104,8 @@ form.addEventListener('submit', async (e) => {
 
   if (password !== password2) {
     mismatchEl.classList.add('show');
-    STANNG.shake(form);
-    STANNG.playSfx('error');
-    return;
+  STANNG.shake(form);
+  return;
   }
   STANNG.setLoading(btn, true);
   try {

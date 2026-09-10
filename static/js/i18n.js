@@ -152,7 +152,7 @@ window.I18N = {
   settings_public_domain: { fa: 'دامنه عمومی (اختیاری، خالی = تشخیص خودکار)', en: 'Public Domain (optional, blank = auto-detect)' },
   settings_keepalive: { fa: 'سیستم بیدارباش (Keep-Alive)', en: 'Keep-Alive System' },
   settings_keepalive_hint: { fa: 'هر ۱۰ دقیقه یک بار پینگ داخلی برای جلوگیری از خواب رفتن سرویس', en: 'Pings itself every 10 minutes to prevent free-tier sleep' },
-  settings_sound: { fa: 'جلوه‌های صوتی', en: 'Sound Effects' },
+  settings_music: { fa: 'پخش موسیقی', en: 'Play Music' },
   settings_theme: { fa: 'پوسته', en: 'Theme' },
   settings_theme_dark: { fa: 'تاریک', en: 'Dark' },
   settings_theme_light: { fa: 'روشن', en: 'Light' },

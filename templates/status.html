@@ -37,11 +37,10 @@
 <script src="/static/js/common.js"></script>
 <script>
 document.querySelectorAll('.lang-toggle button').forEach(btn => {
-  btn.addEventListener('click', () => { STANNG.setLang(btn.dataset.lang); render(); STANNG.playSfx('toggle', 0.3); });
+  btn.addEventListener('click', () => { STANNG.setLang(btn.dataset.lang); render(); });
 });
 document.getElementById('themeToggle').addEventListener('click', () => {
   STANNG.setTheme(STANNG.getTheme() === 'dark' ? 'light' : 'dark');
-  STANNG.playSfx('toggle', 0.3);
 });
 
 const uid = "{{ uid }}";

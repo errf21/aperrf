@@ -29,8 +29,6 @@
     }
   }).catch(() => { window.location.href = '/login'; });
 
-  document.getElementById('settingSound').checked = STANNG.isSoundEnabled();
-
   // ---------------- nav / view switching ----------------
   const views = document.querySelectorAll('.view');
   const navItems = document.querySelectorAll('.nav-item[data-view]');
@@ -45,7 +43,6 @@
     if (name === 'inbounds') loadInbounds();
     if (name === 'traffic') loadInbounds();
     closeSidebarMobile();
-    STANNG.playSfx('open', 0.3);
   }
   navItems.forEach(item => item.addEventListener('click', () => showView(item.dataset.view)));
 
@@ -70,19 +67,20 @@
     btn.addEventListener('click', () => {
       STANNG.setLang(btn.dataset.lang);
       viewTitle.textContent = STANNG.t(viewTitle.getAttribute('data-i18n'));
-      STANNG.playSfx('toggle', 0.3);
     });
   });
   document.getElementById('themeToggle').addEventListener('click', () => {
     STANNG.setTheme(STANNG.getTheme() === 'dark' ? 'light' : 'dark');
-    STANNG.playSfx('toggle', 0.3);
     renderTrafficChart(document.getElementById('trafficChart'), lastHourly);
   });
-  document.getElementById('soundToggle').addEventListener('click', () => {
-    const next = !STANNG.isSoundEnabled();
-    STANNG.setSoundEnabled(next);
-    document.getElementById('settingSound').checked = next;
-    if (next) STANNG.playSfx('click');
+
+  // ---------------- dashboard music ----------------
+  const music = new Audio('/static/sfx/cornfield.mp3');
+  music.loop = true;
+  document.getElementById('settingMusic').addEventListener('change', (e) => {
+    if (!e.target.checked) { music.pause(); music.currentTime = 0; return; }
+    music.currentTime = 0;
+    music.play().catch(() => { e.target.checked = false; });
   });
 
   // ---------------- logout ----------------
@@ -94,11 +92,9 @@
   // ---------------- modal helpers ----------------
   function openModal(id) {
     document.getElementById(id).classList.add('open');
-    STANNG.playSfx('open', 0.4);
   }
   function closeModal(id) {
     document.getElementById(id).classList.remove('open');
-    STANNG.playSfx('close', 0.4);
   }
   document.querySelectorAll('[data-close-modal]').forEach(btn => {
     btn.addEventListener('click', () => closeModal(btn.dataset.closeModal));
@@ -330,7 +326,6 @@
   function copyText(text) {
     navigator.clipboard.writeText(text).then(() => {
       STANNG.toast(STANNG.t('copied'), 'success', 1600);
-      STANNG.playSfx('click', 0.4);
     }).catch(() => STANNG.toast('error', 'error'));
   }
 
@@ -380,7 +375,6 @@
       public_domain: document.getElementById('settingPublicDomain').value.trim(),
       keep_alive: document.getElementById('settingKeepAlive').checked,
     };
-    STANNG.setSoundEnabled(document.getElementById('settingSound').checked);
     const btn = document.getElementById('saveSettingsBtn');
     STANNG.setLoading(btn, true);
     try {
