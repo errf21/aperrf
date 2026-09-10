@@ -180,7 +180,6 @@ docker run -p 8000:8000 aperrf
 - فونت‌ها: **Vazirmatn**، **Cinzel**، **MedievalSharp**، **IBM Plex Mono** و **Space Grotesk** — همه تحت SIL OFL 1.1 (متن کامل در فایل‌های `static/fonts/LICENSE-*.txt`).
 - موسیقی `cornfield` در `static/sfx/` — CC0 1.0 Universal از Kenney.nl.
 - موتور **Xray-core** (توسط XTLS) در ایمیج داکر نصب می‌شود: [github.com/XTLS/Xray-core](https://github.com/XTLS/Xray-core).
-- **قدردانی ویژه** از [**Alireza78na**](https://github.com/Alireza78na) برای بهبودها و رفع باگ‌های ارزشمند.
 
 ---
 
