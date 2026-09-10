@@ -39,6 +39,8 @@ DEFAULT_DB: Dict[str, Any] = {
         "link_name_vl_ws_tls": "",
         "link_name_vm_ws_tls": "",
         "link_name_vl_xhttp_tls": "",
+        # ---- subscription profile title (Profile-Title header); blank = panel default title ----
+        "subscription_name": "",
         "fragment_enabled": True,
         "fragment_packets": "tlshello",
         "fragment_length": "10-30",

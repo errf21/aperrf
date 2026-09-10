@@ -164,6 +164,8 @@ window.I18N = {
   settings_sni_override_hint: { fa: 'اگر خالی باشد، دامنه اصلی به‌عنوان SNI استفاده می‌شود.', en: 'If left blank, the main domain is used as SNI.' },
   settings_link_prefix: { fa: 'پیشوند نام کانفیگ‌ها در اشتراک', en: 'Subscription Link Name Prefix' },
   settings_link_prefix_hint: { fa: 'متنی که به‌جای «aperrf» در ابتدای نام کانفیگ‌های خروجی اشتراک استفاده می‌شود.', en: 'Text used instead of "aperrf" at the start of subscription config names.' },
+  settings_subscription_name: { fa: 'عنوان اشتراک (Subscription Name)', en: 'Subscription Name / Title' },
+  settings_subscription_name_hint: { fa: 'در صورت خالی بودن، عنوان پیش‌فرض نمایش داده می‌شود.', en: 'If left blank, the default title is shown.' },
   settings_link_name_vl: { fa: 'نام اختصاصی کانفیگ VL-WS-TLS', en: 'Custom Name — VL-WS-TLS Config' },
   settings_link_name_vm: { fa: 'نام اختصاصی کانفیگ VM-WS-TLS', en: 'Custom Name — VM-WS-TLS Config' },
   settings_link_name_xh: { fa: 'نام اختصاصی کانفیگ VL-XHTTP-TLS', en: 'Custom Name — VL-XHTTP-TLS Config' },

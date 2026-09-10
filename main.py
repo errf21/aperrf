@@ -34,6 +34,7 @@ from colo_map import describe_colo
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 APP_VERSION = "1.5.6"
 PANEL_NAME = "aperrf"
+DEFAULT_PROFILE_TITLE_B64 = "2YHZhNi02YUgYXBlcnJmINeo2YXYs9in2YUg2YHZg9in2YUg2YHZhiDYsdmF2KfbjCDZiNiv2YbYqg=="
 TELEGRAM_CONTACT = "https://t.me/Espierz"
 SESSION_COOKIE = "stanng_session"
 SESSION_MAX_AGE = 60 * 60 * 24 * 7
@@ -489,9 +490,10 @@ async def api_update_settings(request: Request, user: str = Depends(require_auth
         "lang", "theme", "public_domain", "keep_alive",
         "default_fingerprint", "default_alpn", "sni_override", "link_prefix",
         "link_name_vl_ws_tls", "link_name_vm_ws_tls", "link_name_vl_xhttp_tls",
+        "subscription_name",
         "fragment_enabled", "fragment_packets", "fragment_length", "fragment_interval",
     }
-    valid_names = {"link_prefix", "link_name_vl_ws_tls", "link_name_vm_ws_tls", "link_name_vl_xhttp_tls"}
+    valid_names = {"link_prefix", "link_name_vl_ws_tls", "link_name_vm_ws_tls", "link_name_vl_xhttp_tls", "subscription_name"}
     valid_fp = {"chrome", "ios", "firefox", "edge", "random"}
     valid_alpn = {"http/1.1", "h2,http/1.1", "h3,h2,http/1.1"}
 
@@ -747,14 +749,19 @@ async def sub_plain(uid: str, request: Request):
     expire_ts = int(ib.get("expire_at") or 0)
     user_info_header = f"upload={used_up}; download={used_down}; total={total_bytes}; expire={expire_ts}"
 
+    sub_title = ((db.get("settings") or {}).get("subscription_name") or "").strip()
+    if sub_title:
+        profile_title = f"base64:{base64.b64encode(sub_title.encode()).decode()}"
+    else:
+        profile_title = f"base64:{DEFAULT_PROFILE_TITLE_B64}"
+
     headers = {
         "Content-Type": "text/plain; charset=utf-8",
         "Subscription-Userinfo": user_info_header,
         "subscription-userinfo": user_info_header,
         "Profile-Update-Interval": "1",
         "profile-update-interval": "1",
-        # تغییر زیر اعمال شده است:
-        "Profile-Title": "base64:2YHZhNi02YUgYXBlcnJmINeo2YXYs9in2YUg2YHZg9in2YUg2YHZhiDYsdmF2KfbjCDZiNiv2YbYqg==",
+        "Profile-Title": profile_title,
         "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
         "Pragma": "no-cache",
         "Expires": "0",

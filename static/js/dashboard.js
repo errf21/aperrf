@@ -22,6 +22,7 @@
       document.getElementById('settingNameVlWsTls').value = me.settings.link_name_vl_ws_tls || '';
       document.getElementById('settingNameVmWsTls').value = me.settings.link_name_vm_ws_tls || '';
       document.getElementById('settingNameVlXhttpTls').value = me.settings.link_name_vl_xhttp_tls || '';
+      document.getElementById('settingSubscriptionName').value = me.settings.subscription_name || '';
       document.getElementById('settingFragmentEnabled').checked = me.settings.fragment_enabled !== false;
       document.getElementById('settingFragmentPackets').value = me.settings.fragment_packets || 'tlshello';
       document.getElementById('settingFragmentLength').value = me.settings.fragment_length || '10-30';
@@ -397,6 +398,7 @@
       link_name_vl_ws_tls: document.getElementById('settingNameVlWsTls').value.trim(),
       link_name_vm_ws_tls: document.getElementById('settingNameVmWsTls').value.trim(),
       link_name_vl_xhttp_tls: document.getElementById('settingNameVlXhttpTls').value.trim(),
+      subscription_name: document.getElementById('settingSubscriptionName').value.trim(),
       fragment_enabled: document.getElementById('settingFragmentEnabled').checked,
       fragment_packets: document.getElementById('settingFragmentPackets').value.trim() || 'tlshello',
       fragment_length: document.getElementById('settingFragmentLength').value.trim() || '10-30',
