@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-StanNG — a single-service VLESS-over-WebSocket panel (aperrf build).
+ErrfPanel — a single-service VLESS-over-WebSocket panel.
 Version 1.5.6 — customized edition; built-in OTA / upstream self-update removed by design.
 """
 import asyncio
@@ -33,10 +33,10 @@ from colo_map import describe_colo
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 APP_VERSION = "1.5.6"
-PANEL_NAME = "aperrf"
-DEFAULT_PROFILE_TITLE_B64 = "2YHZhNi02YUgYXBlcnJmINeo2YXYs9in2YUg2YHZg9in2YUg2YHZhiDYsdmF2KfbjCDZiNiv2YbYqg=="
+PANEL_NAME = "errfpanel"
+DEFAULT_PROFILE_TITLE_B64 = "2KfYtNiq2LHYp9qpIMK3IGVycmZwYW5lbA=="
 TELEGRAM_CONTACT = "https://t.me/Espierz"
-SESSION_COOKIE = "stanng_session"
+SESSION_COOKIE = "errfpanel_session"
 SESSION_MAX_AGE = 60 * 60 * 24 * 7
 LOGIN_MAX_ATTEMPTS = 6
 LOGIN_LOCK_SECONDS = 5 * 60
@@ -71,13 +71,13 @@ async def lifespan(app: FastAPI):
     await doh_http_client.aclose()
 
 
-app = FastAPI(title="aperrf", version=APP_VERSION, lifespan=lifespan)
+app = FastAPI(title="errfpanel", version=APP_VERSION, lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
 
 # ------------------------------------------------------------------ helpers
 def get_serializer(db) -> URLSafeTimedSerializer:
-    return URLSafeTimedSerializer(db["secret_key"], salt="stanng-session")
+    return URLSafeTimedSerializer(db["secret_key"], salt="errfpanel-session")
 
 
 def _client_ip(request: Request) -> str:

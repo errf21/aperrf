@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>{{ panel_name }} · Dashboard</title>
-<link rel="icon" type="image/svg+xml" href="/static/img/favicon-aperrf.svg">
-<link rel="icon" href="/static/img/favicon-32.png">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon-errfpanel.svg">
 <link rel="apple-touch-icon" href="/static/img/favicon-180.png">
 <link rel="stylesheet" href="/static/css/fonts.css">
 <link rel="stylesheet" href="/static/css/theme.css">
@@ -13,6 +12,7 @@
 </head>
 <body>
 {% include "_icons.html" %}
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <a class="telegram-fab" href="{{ telegram_contact }}" target="_blank" rel="noopener" title="پشتیبانی تلگرام / Telegram Support">
   <svg><use href="#icon-telegram"/></svg>
 </a>
@@ -21,7 +21,7 @@
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-brand">
-      <img src="/static/img/logo-aperrf.svg" alt="aperrf">
+      <svg class="brand-mark" viewBox="0 0 40 40" role="img" aria-label="errf"><use href="#brand-e"/></svg>
       <div>
         <div class="name">{{ panel_name }}</div>
         <div class="sub">v<span id="appVersion">-</span></div>
@@ -67,30 +67,40 @@
 
       <!-- ============ DASHBOARD VIEW ============ -->
       <section class="view active" id="view-dashboard">
+        <div class="page-head">
+          <span class="eyebrow" data-i18n="ph_eyebrow_monitor">OVERVIEW</span>
+          <h2 data-i18n="nav_dashboard">داشبورد</h2>
+          <div class="page-desc" data-i18n="ph_dash_d">وضعیت لحظه‌ای سرور، ترافیک و کاربران در یک نگاه.</div>
+        </div>
         <div class="grid mb-16">
           <div class="col-3 win stat-card">
-            <div class="label"><svg><use href="#icon-cpu"/></svg><span data-i18n="dash_cpu">پردازنده</span></div>
+            <span class="stat-tile tile-sky"><svg><use href="#icon-cpu"/></svg></span>
+            <div class="label"><span data-i18n="dash_cpu">پردازنده</span></div>
             <div class="value" id="statCpu">--%</div>
             <div class="bar progress-accent"><span id="barCpu" style="width:0%"></span></div>
           </div>
           <div class="col-3 win stat-card">
-            <div class="label"><svg><use href="#icon-memory"/></svg><span data-i18n="dash_ram">حافظه</span></div>
+            <span class="stat-tile tile-violet"><svg><use href="#icon-memory"/></svg></span>
+            <div class="label"><span data-i18n="dash_ram">حافظه</span></div>
             <div class="value" id="statMem">--%</div>
             <div class="bar progress-azure"><span id="barMem" style="width:0%"></span></div>
           </div>
           <div class="col-3 win stat-card">
-            <div class="label"><svg><use href="#icon-clock"/></svg><span data-i18n="dash_uptime">زمان فعالیت</span></div>
+            <span class="stat-tile tile-amber"><svg><use href="#icon-clock"/></svg></span>
+            <div class="label"><span data-i18n="dash_uptime">زمان فعالیت</span></div>
             <div class="value" id="statUptime" style="font-size:19px;">--</div>
           </div>
           <div class="col-3 win stat-card">
-            <div class="label"><svg><use href="#icon-globe"/></svg><span data-i18n="dash_location">موقعیت سرور</span></div>
+            <span class="stat-tile tile-emerald"><svg><use href="#icon-globe"/></svg></span>
+            <div class="label"><span data-i18n="dash_location">موقعیت سرور</span></div>
             <div class="value" id="statLocation" style="font-size:15px;">--</div>
           </div>
         </div>
 
         <div class="grid mb-16">
           <div class="col-4 win stat-card">
-            <div class="label"><svg><use href="#icon-traffic"/></svg><span data-i18n="dash_total_traffic">کل ترافیک</span></div>
+            <span class="stat-tile tile-sky"><svg><use href="#icon-traffic"/></svg></span>
+            <div class="label"><span data-i18n="dash_total_traffic">کل ترافیک</span></div>
             <div class="value" id="statTotalTraffic">0 B</div>
             <div class="small muted flex gap-12 mt-8">
               <span><svg width="12" height="12" style="vertical-align:-1px"><use href="#icon-upload"/></svg> <span id="statUp">0 B</span></span>
@@ -98,11 +108,13 @@
             </div>
           </div>
           <div class="col-4 win stat-card">
-            <div class="label"><svg><use href="#icon-bolt"/></svg><span data-i18n="dash_active_conn">اتصالات فعال</span></div>
+            <span class="stat-tile tile-emerald"><svg><use href="#icon-bolt"/></svg></span>
+            <div class="label"><span data-i18n="dash_active_conn">اتصالات فعال</span></div>
             <div class="value" id="statActiveConn">0</div>
           </div>
           <div class="col-4 win stat-card">
-            <div class="label"><svg><use href="#icon-users"/></svg><span data-i18n="dash_total_inbounds">تعداد کاربران</span></div>
+            <span class="stat-tile tile-violet"><svg><use href="#icon-users"/></svg></span>
+            <div class="label"><span data-i18n="dash_total_inbounds">تعداد کاربران</span></div>
             <div class="value" id="statInboundCount">0</div>
           </div>
         </div>
@@ -113,9 +125,12 @@
             <div class="win-body"><canvas id="trafficChart" height="240"></canvas></div>
           </div>
           <div class="col-4 win">
-            <div class="win-head"><h3><svg><use href="#icon-server"/></svg><span data-i18n="dash_status_title">وضعیت پنل</span></h3></div>
-            <div class="win-body flex-col gap-12">
-              <div class="small muted">v<span class="num" id="panelVersionChip">-</span> — aperrf</div>
+            <div class="win-head"><h3><svg><use href="#icon-server"/></svg><span data-i18n="dash_status_title">وضعیت سرویس</span></h3></div>
+            <div class="win-body flex-col gap-12" style="justify-content:center;">
+              <div class="flex items-center gap-12">
+                <span class="pill pill-on"><span class="pill-dot"></span><span data-i18n="status_live">در حال اجرا</span></span>
+              </div>
+              <div class="small muted">v<span class="num" id="panelVersionChip">-</span> — errfpanel</div>
               <hr>
               <button class="btn btn-primary btn-sm w-full" id="quickAddBtn"><svg width="16" height="16"><use href="#icon-plus"/></svg><span data-i18n="dash_quick_add">افزودن کاربر جدید</span></button>
             </div>
@@ -125,6 +140,11 @@
 
       <!-- ============ INBOUNDS VIEW ============ -->
       <section class="view" id="view-inbounds">
+        <div class="page-head">
+          <span class="eyebrow" data-i18n="ph_eyebrow_users">ACCESS</span>
+          <h2 data-i18n="inb_title">مدیریت کاربران</h2>
+          <div class="page-desc" data-i18n="ph_inb_d">ساخت کاربر، سهمیه حجم، اعتبار زمانی و لینک‌های اشتراک.</div>
+        </div>
         <div class="win">
           <div class="win-head">
             <h3><svg><use href="#icon-users"/></svg><span data-i18n="inb_title">مدیریت کاربران</span></h3>
@@ -162,13 +182,20 @@
 
       <!-- ============ TRAFFIC VIEW ============ -->
       <section class="view" id="view-traffic">
+        <div class="page-head">
+          <span class="eyebrow" data-i18n="ph_eyebrow_traffic">TRAFFIC</span>
+          <h2 data-i18n="nav_traffic">ترافیک</h2>
+          <div class="page-desc" data-i18n="ph_traffic_d">مجموع آپلود و دانلود و تفکیک مصرف هر کاربر.</div>
+        </div>
         <div class="grid mb-16">
           <div class="col-6 win stat-card">
-            <div class="label"><svg><use href="#icon-upload"/></svg><span data-i18n="dash_upload">آپلود</span></div>
+            <span class="stat-tile tile-sky"><svg><use href="#icon-upload"/></svg></span>
+            <div class="label"><span data-i18n="dash_upload">آپلود</span></div>
             <div class="value" id="trafficUp">0 B</div>
           </div>
           <div class="col-6 win stat-card">
-            <div class="label"><svg><use href="#icon-download"/></svg><span data-i18n="dash_download">دانلود</span></div>
+            <span class="stat-tile tile-emerald"><svg><use href="#icon-download"/></svg></span>
+            <div class="label"><span data-i18n="dash_download">دانلود</span></div>
             <div class="value" id="trafficDown">0 B</div>
           </div>
         </div>
@@ -189,6 +216,11 @@
 
       <!-- ============ SECURITY VIEW ============ -->
       <section class="view" id="view-security">
+        <div class="page-head">
+          <span class="eyebrow" data-i18n="ph_eyebrow_security">SECURITY</span>
+          <h2 data-i18n="nav_security">امنیت</h2>
+          <div class="page-desc" data-i18n="ph_sec_d">تغییر نام کاربری و رمز عبور فضای مدیریتی.</div>
+        </div>
         <div class="win sec-panel">
           <div class="win-head"><h3><svg><use href="#icon-shield"/></svg><span data-i18n="sec_change_pass">تغییر نام کاربری / رمز عبور</span></h3></div>
           <div class="win-body">
@@ -230,6 +262,11 @@
 
       <!-- ============ SETTINGS VIEW ============ -->
       <section class="view" id="view-settings">
+        <div class="page-head">
+          <span class="eyebrow" data-i18n="ph_eyebrow_settings">SETTINGS</span>
+          <h2 data-i18n="nav_settings">تنظیمات</h2>
+          <div class="page-desc" data-i18n="ph_set_d">پیکربندی عمومی و پیش‌فرض‌های ساخت کانفیگ برای همه کاربران.</div>
+        </div>
         <div class="grid">
           <div class="col-6 win">
             <div class="win-head"><h3><svg><use href="#icon-settings"/></svg><span data-i18n="settings_title">تنظیمات عمومی</span></h3></div>
@@ -244,6 +281,16 @@
                   <div class="small muted mt-8" data-i18n="settings_keepalive_hint">هر ۱۰ دقیقه یک بار پینگ داخلی برای جلوگیری از خواب رفتن سرویس</div>
                 </div>
                 <label class="switch"><input type="checkbox" id="settingKeepAlive" checked><span class="track"><span class="thumb"></span></span></label>
+              </div>
+              <div class="field flex items-center justify-between setting-card" id="musicVolumeRow">
+                <div style="font-weight:700; font-size:13.5px;">
+                  <svg width="14" height="14" style="vertical-align:-2px; margin-inline-end:7px;"><use href="#icon-volume"/></svg>
+                  <span data-i18n="settings_music_volume">ولوم موسیقی</span>
+                </div>
+                <div class="volume-control">
+                  <input type="range" id="musicVolume" class="volume-range" min="0" max="100" step="1" value="100" aria-label="Music volume">
+                  <span class="num volume-pct" id="musicVolumePct">100%</span>
+                </div>
               </div>
               <div class="field flex items-center justify-between setting-card">
                 <div style="font-weight:700; font-size:13.5px;" data-i18n="settings_music">پخش موسیقی</div>
@@ -282,8 +329,8 @@
               </div>
               <div class="field">
                 <label data-i18n="settings_link_prefix">پیشوند نام کانفیگ‌ها در اشتراک</label>
-                <input class="input" type="text" id="settingLinkPrefix" placeholder="aperrf" style="direction:ltr;">
-                <div class="small muted mt-8" data-i18n="settings_link_prefix_hint">متنی که به‌جای «aperrf» در ابتدای نام کانفیگ‌های خروجی اشتراک استفاده می‌شود.</div>
+                <input class="input" type="text" id="settingLinkPrefix" placeholder="errfpanel" style="direction:ltr;">
+                <div class="small muted mt-8" data-i18n="settings_link_prefix_hint">متنی که به‌جای «errfpanel» در ابتدای نام کانفیگ‌های خروجی اشتراک استفاده می‌شود.</div>
               </div>
               <div class="field">
                 <label data-i18n="settings_subscription_name">عنوان اشتراک (Subscription Name)</label>

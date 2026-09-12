@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<script>try{var t=localStorage.getItem('stanng_theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
-<title>aperrf · Setup</title>
-<link rel="icon" type="image/svg+xml" href="/static/img/favicon-aperrf.svg">
-<link rel="icon" href="/static/img/favicon-32.png">
+<script>try{var t=localStorage.getItem('errfpanel_theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<title>errf · Setup</title>
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon-errfpanel.svg">
 <link rel="apple-touch-icon" href="/static/img/favicon-180.png">
 <link rel="stylesheet" href="/static/css/fonts.css">
 <link rel="stylesheet" href="/static/css/theme.css">
@@ -14,14 +13,53 @@
 </head>
 <body class="auth-console">
 {% include "_icons.html" %}
-<a class="telegram-fab" href="https://t.me/Espierz" target="_blank" rel="noopener" title="پشتیبانی تلگرام / Telegram Support">
-  <svg><use href="#icon-telegram"/></svg>
-</a>
-<div class="auth-shell">
-  <div class="auth-card">
-    <img class="auth-logo" src="/static/img/logo-aperrf.svg" alt="aperrf">
-    <div class="brand-title" data-i18n="setup_title">برپایی اولیه پنل</div>
-    <div class="brand-sub" data-i18n="setup_sub">یک نام کاربری و رمز عبور برای دسترسی به پنل خود بسازید</div>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<header class="auth-bar">
+  <span class="brand-lockup">
+    <svg class="brand-mark" viewBox="0 0 40 40" role="img" aria-label="errf"><use href="#brand-e"/></svg>
+    <span class="wordmark">errf</span>
+  </span>
+  <span class="auth-bar-actions">
+    <div class="lang-toggle">
+      <button type="button" data-lang="fa">FA</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+    <button class="icon-btn" id="themeToggle" title="theme">
+      <svg><use href="#icon-moon"/></svg>
+    </button>
+  </span>
+</header>
+
+<main class="auth-main">
+  <section class="hero-brand stagger-in">
+    <span class="eyebrow" data-i18n="auth_eyebrow">CLOUD NETWORK CONTROL</span>
+    <h1 class="hero-title"><span class="sheen" data-i18n="brand_short">errf</span></h1>
+    <p class="hero-sub" data-i18n="setup_hero_sub">شبکه‌ی اختصاصی شما، در یک فضای مدیریتی مدرن — سریع، امن و بدون شلوغی.</p>
+    <div class="hero-features">
+      <div class="feature-row">
+        <span class="tile tile-sky"><svg><use href="#icon-bolt"/></svg></span>
+        <span class="f-copy"><b data-i18n="setup_feat1_t">کانفیگ آنی</b><span data-i18n="setup_feat1_d">TLS، لینک اشتراک و QR در یک لحظه</span></span>
+      </div>
+      <div class="feature-row">
+        <span class="tile tile-violet"><svg><use href="#icon-traffic"/></svg></span>
+        <span class="f-copy"><b data-i18n="setup_feat2_t">پایش زنده</b><span data-i18n="setup_feat2_d">ترافیک ساعتی، CPU و حافظه — به‌موقع</span></span>
+      </div>
+      <div class="feature-row">
+        <span class="tile tile-emerald"><svg><use href="#icon-shield"/></svg></span>
+        <span class="f-copy"><b data-i18n="setup_feat3_t">امنیت لایه‌ای</b><span data-i18n="setup_feat3_d">قفل IP، Fragment و اعتبار زمانی</span></span>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <span data-i18n="setup_meta_free">رایگان و متن‌باز</span>
+      <span class="dot-sep"></span>
+      <span data-i18n="setup_meta_deploy">استقرار با Docker، Railway یا Render</span>
+    </div>
+  </section>
+
+  <section class="auth-panel stagger-in">
+    <div class="panel-title" data-i18n="setup_title">شروع فضای مدیریت</div>
+    <p class="panel-sub" data-i18n="setup_sub">فضای شما آماده است — فقط یک حساب بسازید تا مدیریت را آغاز کنید</p>
 
     <form id="setupForm" class="shake-target" autocomplete="off">
       <div class="field">
@@ -50,32 +88,22 @@
         </div>
         <div class="inline-error" id="mismatchError" data-i18n="setup_mismatch">رمزهای عبور یکسان نیستند</div>
       </div>
-      <button type="submit" class="btn btn-primary btn-block mt-20" id="setupBtn">
-        <span class="btn-label" data-i18n="setup_submit">ساخت حساب و ورود</span>
+      <button type="submit" class="btn btn-primary btn-block form-gap" id="setupBtn">
+        <span class="btn-label" data-i18n="setup_submit">ساخت حساب و ادامه</span>
       </button>
     </form>
-
-    <div class="flex justify-between items-center mt-24">
-      <div class="lang-toggle">
-        <button type="button" data-lang="fa">FA</button>
-        <button type="button" data-lang="en">EN</button>
-      </div>
-      <button class="icon-btn" id="themeToggle" title="theme">
-        <svg><use href="#icon-moon"/></svg>
-      </button>
-    </div>
-  </div>
-</div>
+  </section>
+</main>
 
 <script src="/static/js/i18n.js"></script>
 <script src="/static/js/common.js"></script>
 <script>
 document.querySelectorAll('.lang-toggle button').forEach(btn => {
-  btn.addEventListener('click', () => { STANNG.setLang(btn.dataset.lang); });
+  btn.addEventListener('click', () => { ERRF.setLang(btn.dataset.lang); });
 });
 document.getElementById('themeToggle').addEventListener('click', () => {
-  const next = STANNG.getTheme() === 'dark' ? 'light' : 'dark';
-  STANNG.setTheme(next);
+  const next = ERRF.getTheme() === 'dark' ? 'light' : 'dark';
+  ERRF.setTheme(next);
 });
 document.querySelectorAll('[data-toggle-for]').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -104,21 +132,21 @@ form.addEventListener('submit', async (e) => {
 
   if (password !== password2) {
     mismatchEl.classList.add('show');
-  STANNG.shake(form);
+  ERRF.shake(form);
   return;
   }
-  STANNG.setLoading(btn, true);
+  ERRF.setLoading(btn, true);
   try {
-    await STANNG.api('/api/setup', { method: 'POST', body: { username, password } });
-    STANNG.toast(STANNG.t('setup_done'), 'success');
+    await ERRF.api('/api/setup', { method: 'POST', body: { username, password } });
+    ERRF.toast(ERRF.t('setup_done'), 'success');
     setTimeout(() => window.location.href = '/dashboard', 700);
   } catch (err) {
-    STANNG.setLoading(btn, false);
-    STANNG.shake(form);
+    ERRF.setLoading(btn, false);
+    ERRF.shake(form);
     let msg = err.detail || 'error';
-    if (msg === 'invalid-username') msg = STANNG.t('setup_username_hint');
-    else if (msg === 'weak-password') msg = STANNG.t('setup_password_hint');
-    STANNG.toast(msg, 'error');
+    if (msg === 'invalid-username') msg = ERRF.t('setup_username_hint');
+    else if (msg === 'weak-password') msg = ERRF.t('setup_password_hint');
+    ERRF.toast(msg, 'error');
   }
 });
 </script>

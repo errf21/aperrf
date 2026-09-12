@@ -4,43 +4,48 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>{{ panel_name }} · Status</title>
-<link rel="icon" type="image/svg+xml" href="/static/img/favicon-aperrf.svg">
-<link rel="icon" href="/static/img/favicon-32.png">
+<link rel="icon" type="image/svg+xml" href="/static/img/favicon-errfpanel.svg">
 <link rel="apple-touch-icon" href="/static/img/favicon-180.png">
 <link rel="stylesheet" href="/static/css/fonts.css">
 <link rel="stylesheet" href="/static/css/theme.css">
 <link rel="stylesheet" href="/static/css/dashboard.css">
 </head>
-<body class="auth-console status-page">
+<body class="auth-console auth-single status-page">
 {% include "_icons.html" %}
-<a class="telegram-fab" href="https://t.me/Espierz" target="_blank" rel="noopener" title="پشتیبانی تلگرام / Telegram Support">
-  <svg><use href="#icon-telegram"/></svg>
-</a>
-<div class="auth-shell">
-  <div class="auth-card">
-    <img class="auth-logo" src="/static/img/logo-aperrf.svg" alt="aperrf">
-    <div class="brand-title" data-i18n="status_page_title">وضعیت اشتراک</div>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<header class="auth-bar">
+  <span class="brand-lockup">
+    <svg class="brand-mark" viewBox="0 0 40 40" role="img" aria-label="errf"><use href="#brand-e"/></svg>
+    <span class="wordmark">errf</span>
+  </span>
+  <span class="auth-bar-actions">
+    <div class="lang-toggle">
+      <button type="button" data-lang="fa">FA</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+    <button class="icon-btn" id="themeToggle" title="theme"><svg><use href="#icon-moon"/></svg></button>
+  </span>
+</header>
+
+<main class="auth-main">
+  <section class="auth-panel" style="max-width: 560px;">
+    <span class="eyebrow" data-i18n="status_eyebrow">SUBSCRIPTION STATUS</span>
+    <div class="panel-title" data-i18n="status_page_title">وضعیت اشتراک</div>
     <div id="statusContent" class="mt-20">
       <div class="text-center muted" data-i18n="loading">در حال بارگذاری...</div>
     </div>
-    <div class="flex justify-between items-center mt-24">
-      <div class="lang-toggle">
-        <button type="button" data-lang="fa">FA</button>
-        <button type="button" data-lang="en">EN</button>
-      </div>
-      <button class="icon-btn" id="themeToggle" title="theme"><svg><use href="#icon-moon"/></svg></button>
-    </div>
-  </div>
-</div>
+  </section>
+</main>
 
 <script src="/static/js/i18n.js"></script>
 <script src="/static/js/common.js"></script>
 <script>
 document.querySelectorAll('.lang-toggle button').forEach(btn => {
-  btn.addEventListener('click', () => { STANNG.setLang(btn.dataset.lang); render(); });
+  btn.addEventListener('click', () => { ERRF.setLang(btn.dataset.lang); render(); });
 });
 document.getElementById('themeToggle').addEventListener('click', () => {
-  STANNG.setTheme(STANNG.getTheme() === 'dark' ? 'light' : 'dark');
+  ERRF.setTheme(ERRF.getTheme() === 'dark' ? 'light' : 'dark');
 });
 
 const uid = "{{ uid }}";
@@ -50,41 +55,41 @@ function render() {
   const el = document.getElementById('statusContent');
   if (!lastData) return;
   if (lastData.error) {
-    el.innerHTML = `<div class="text-center muted">${STANNG.t('status_not_found')}</div>`;
+    el.innerHTML = `<div class="text-center muted">${ERRF.t('status_not_found')}</div>`;
     return;
   }
   const d = lastData;
   const pct = d.quota_bytes > 0 ? Math.min(100, (d.used_bytes / d.quota_bytes) * 100) : 0;
-  const quotaTxt = d.quota_gb > 0 ? `${d.used_gb} GB / ${d.quota_gb} GB` : `${d.used_gb} GB / ${STANNG.t('unlimited')}`;
+  const quotaTxt = d.quota_gb > 0 ? `${d.used_gb} GB / ${d.quota_gb} GB` : `${d.used_gb} GB / ${ERRF.t('unlimited')}`;
   const statusPill = d.enabled
-    ? `<span class="pill pill-on"><span class="pill-dot"></span>${STANNG.t('active')}</span>`
-    : `<span class="pill pill-off"><span class="pill-dot"></span>${STANNG.t('status_disabled')}</span>`;
-  const expiry = d.expire_at ? new Date(d.expire_at * 1000).toLocaleDateString(STANNG.getLang() === 'fa' ? 'fa-IR' : 'en-US') : STANNG.t('unlimited');
+    ? `<span class="pill pill-on"><span class="pill-dot"></span>${ERRF.t('active')}</span>`
+    : `<span class="pill pill-off"><span class="pill-dot"></span>${ERRF.t('status_disabled')}</span>`;
+  const expiry = d.expire_at ? new Date(d.expire_at * 1000).toLocaleDateString(ERRF.getLang() === 'fa' ? 'fa-IR' : 'en-US') : ERRF.t('unlimited');
   const timeLeft = (d.expire_at && d.days_left != null)
-    ? `<div class="ds-sub"><span>${STANNG.t('status_remaining')}</span><span class="mono">${d.days_left} ${STANNG.t('status_days')}</span></div>`
+    ? `<div class="ds-sub"><span>${ERRF.t('status_remaining')}</span><span class="mono">${d.days_left} ${ERRF.t('status_days')}</span></div>`
     : '';
 
   el.innerHTML = `
     <div class="ds-head">
       <div class="ds-id">
         <div class="ds-name">${d.name}</div>
-        <div class="ds-uid"><span class="ds-k">${STANNG.t('status_identifier')}</span><span class="ds-v mono">${uid}</span></div>
+        <div class="ds-uid"><span class="ds-k">${ERRF.t('status_identifier')}</span><span class="ds-v mono">${uid}</span></div>
       </div>
       <div class="ds-state">${statusPill}</div>
     </div>
     <section class="ds-panel">
-      <div class="ds-label">${STANNG.t('status_usage')}</div>
+      <div class="ds-label">${ERRF.t('status_usage')}</div>
       <div class="bar progress-accent"><span style="width:${pct}%"></span></div>
       <div class="ds-meter-foot"><span>${quotaTxt}</span><span class="mono pct">${Math.round(pct)}%</span></div>
     </section>
     <div class="ds-grid">
       <section class="ds-panel">
-        <div class="ds-label">${STANNG.t('status_expiry')}</div>
+        <div class="ds-label">${ERRF.t('status_expiry')}</div>
         <div class="ds-value">${expiry}</div>
         ${timeLeft}
       </section>
       <section class="ds-panel">
-        <div class="ds-label">${STANNG.t('status_devices')}</div>
+        <div class="ds-label">${ERRF.t('status_devices')}</div>
         <div class="ds-value mono">${d.active_connections}${d.max_connections ? ' / ' + d.max_connections : ''}</div>
       </section>
     </div>

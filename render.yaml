@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: aperrf
+    name: errfpanel
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt

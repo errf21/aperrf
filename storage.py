@@ -1,5 +1,5 @@
 """
-StanNG - Persistent JSON storage layer.
+ErrfPanel - Persistent JSON storage layer.
 Single-file, dependency-free storage engine (no external DB required).
 Thread/async safe via an in-process lock + atomic file writes.
 """
@@ -11,7 +11,7 @@ import time
 import asyncio
 from typing import Any, Dict
 
-DATA_DIR = os.environ.get("STANNG_DATA_DIR", os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"))
+DATA_DIR = os.environ.get("ERRFPANEL_DATA_DIR") or os.environ.get("STANNG_DATA_DIR") or os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 DB_PATH = os.path.join(DATA_DIR, "db.json")
 
 _lock = asyncio.Lock()
@@ -34,7 +34,7 @@ DEFAULT_DB: Dict[str, Any] = {
         "default_fingerprint": "chrome",     # chrome | ios | firefox | edge | random
         "default_alpn": "http/1.1",          # http/1.1 | h2,http/1.1 | h3,h2,http/1.1
         "sni_override": "",                  # optional domain-fronting SNI; blank = use host
-        "link_prefix": "aperrf",             # naming prefix for subscription link remarks; blank = PANEL default
+        "link_prefix": "errfpanel",             # naming prefix for subscription link remarks; blank = PANEL default
         # ---- fully custom per-config subscription remarks; blank = fall back to "{link_prefix}-{name}-SUFFIX" ----
         "link_name_vl_ws_tls": "",
         "link_name_vm_ws_tls": "",

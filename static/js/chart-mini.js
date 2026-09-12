@@ -1,5 +1,5 @@
 /* ===========================================================
-   StanNG — dependency-free hourly traffic chart (canvas + HTML tooltip)
+   errfpanel — dependency-free hourly traffic chart (canvas + HTML tooltip)
    Redesigned for more detail: dual bars (up/down) + a smooth total-traffic
    line overlay, real byte-formatted Y-axis, day-boundary markers, a legend,
    and an interactive hover/tap tooltip. Still zero external chart library.
@@ -58,9 +58,9 @@
       legend.className = 'chart-legend';
       wrap.insertBefore(legend, wrap.firstChild);
     }
-    const upLabel = (window.STANNG && STANNG.t('dash_upload')) || 'Upload';
-    const downLabel = (window.STANNG && STANNG.t('dash_download')) || 'Download';
-    const totalLabel = (window.STANNG && STANNG.t('dash_total_traffic')) || 'Total';
+    const upLabel = (window.ERRF && ERRF.t('dash_upload')) || 'Upload';
+    const downLabel = (window.ERRF && ERRF.t('dash_download')) || 'Download';
+    const totalLabel = (window.ERRF && ERRF.t('dash_total_traffic')) || 'Total';
     legend.innerHTML = `
       <span class="chart-legend-item"><i class="dot dot-gold"></i>${upLabel}</span>
       <span class="chart-legend-item"><i class="dot dot-azure"></i>${downLabel}</span>
@@ -258,10 +258,10 @@
       const dateLabel = dt.toLocaleString(document.documentElement.lang === 'fa' ? 'fa-IR' : 'en-US', {
         month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
       });
-      const upLabel = (window.STANNG && STANNG.t('dash_upload')) || 'Upload';
-      const downLabel = (window.STANNG && STANNG.t('dash_download')) || 'Download';
-      const totalLabel = (window.STANNG && STANNG.t('dash_total_traffic')) || 'Total';
-      const fmt = (window.STANNG && STANNG.fmtBytes) || fmtBytesShort;
+      const upLabel = (window.ERRF && ERRF.t('dash_upload')) || 'Upload';
+      const downLabel = (window.ERRF && ERRF.t('dash_download')) || 'Download';
+      const totalLabel = (window.ERRF && ERRF.t('dash_total_traffic')) || 'Total';
+      const fmt = (window.ERRF && ERRF.fmtBytes) || fmtBytesShort;
       tip.innerHTML = `
         <div class="chart-tooltip-time">${dateLabel}</div>
         <div class="chart-tooltip-row"><i class="dot dot-gold"></i>${upLabel}: <b>${fmt(nearest.up)}</b></div>

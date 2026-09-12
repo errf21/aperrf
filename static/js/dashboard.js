@@ -1,5 +1,5 @@
 /* ===========================================================
-   StanNG — dashboard controller (v1.5.3)
+   errfpanel — dashboard controller (v1.5.3)
    Fully compatible with plain‑text subscription links
    (Info Configs + TLS), no Non‑TLS, no Clean IP.
    =========================================================== */
@@ -8,7 +8,7 @@
   let lastHourly = [];
 
   // ---------------- guard: must be logged in ----------------
-  STANNG.api('/api/me').then(me => {
+  ERRF.api('/api/me').then(me => {
     if (!me.logged_in) { window.location.href = '/login'; return; }
     document.getElementById('appVersion').textContent = me.app_version || '';
     document.getElementById('panelVersionChip').textContent = me.app_version || '';
@@ -18,7 +18,7 @@
       document.getElementById('settingFingerprint').value = me.settings.default_fingerprint || 'chrome';
       document.getElementById('settingAlpn').value = me.settings.default_alpn || 'http/1.1';
       document.getElementById('settingSniOverride').value = me.settings.sni_override || '';
-      document.getElementById('settingLinkPrefix').value = me.settings.link_prefix || 'aperrf';
+      document.getElementById('settingLinkPrefix').value = me.settings.link_prefix || 'errfpanel';
       document.getElementById('settingNameVlWsTls').value = me.settings.link_name_vl_ws_tls || '';
       document.getElementById('settingNameVmWsTls').value = me.settings.link_name_vm_ws_tls || '';
       document.getElementById('settingNameVlXhttpTls').value = me.settings.link_name_vl_xhttp_tls || '';
@@ -40,7 +40,7 @@
     views.forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
     navItems.forEach(n => n.classList.toggle('active', n.dataset.view === name));
     viewTitle.setAttribute('data-i18n', titleKeys[name]);
-    viewTitle.textContent = STANNG.t(titleKeys[name]);
+    viewTitle.textContent = ERRF.t(titleKeys[name]);
     if (name === 'inbounds') loadInbounds();
     if (name === 'traffic') loadInbounds();
     closeSidebarMobile();
@@ -66,27 +66,104 @@
   // ---------------- lang / theme ----------------
   document.querySelectorAll('.lang-toggle button').forEach(btn => {
     btn.addEventListener('click', () => {
-      STANNG.setLang(btn.dataset.lang);
-      viewTitle.textContent = STANNG.t(viewTitle.getAttribute('data-i18n'));
+      ERRF.setLang(btn.dataset.lang);
+      viewTitle.textContent = ERRF.t(viewTitle.getAttribute('data-i18n'));
     });
   });
   document.getElementById('themeToggle').addEventListener('click', () => {
-    STANNG.setTheme(STANNG.getTheme() === 'dark' ? 'light' : 'dark');
+    ERRF.setTheme(ERRF.getTheme() === 'dark' ? 'light' : 'dark');
     renderTrafficChart(document.getElementById('trafficChart'), lastHourly);
   });
 
-  // ---------------- dashboard music ----------------
-  const music = new Audio('/static/sfx/cornfield.mp3');
+  // ---------------- dashboard music : persistent prefs ----------------
+  // [MUSIC-PREFS-BEGIN]
+  function normalizeMusicPrefs(rawEnabled, rawVolume) {
+    const enabled = (rawEnabled === null || rawEnabled === undefined)
+      ? true : String(rawEnabled) === '1';
+    // default = full level; never auto-reduced — only user adjustments change it
+    let volume = 1;
+    const v = parseFloat(rawVolume);
+    if (Number.isFinite(v)) volume = Math.min(100, Math.max(0, v)) / 100;
+    return { enabled, volume };
+  }
+  // [MUSIC-PREFS-END]
+
+  const MUSIC_KEYS = { enabled: 'errfpanel_music_enabled', volume: 'errfpanel_music_volume' };
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, String(v)); } catch (e) { /* private mode */ } }
+
+  const music = new Audio('/static/sfx/cornfield.mp3?v=2');
   music.loop = true;
-  document.getElementById('settingMusic').addEventListener('change', (e) => {
-    if (!e.target.checked) { music.pause(); music.currentTime = 0; return; }
-    music.currentTime = 0;
-    music.play().catch(() => { e.target.checked = false; });
+
+  const musicSwitch = document.getElementById('settingMusic');
+  const volumeRange = document.getElementById('musicVolume');
+  const volumePct = document.getElementById('musicVolumePct');
+  const volumeRow = document.getElementById('musicVolumeRow');
+  const musicPrefs = normalizeMusicPrefs(lsGet(MUSIC_KEYS.enabled), lsGet(MUSIC_KEYS.volume));
+
+  music.volume = musicPrefs.volume;
+  musicSwitch.checked = musicPrefs.enabled;
+
+  function paintMusicVolume(vol) {
+    const pct = Math.round(vol * 100);
+    if (volumeRange) {
+      volumeRange.value = String(pct);
+      volumeRange.style.setProperty('--fill', pct + '%');
+    }
+    if (volumePct) volumePct.textContent = pct + '%';
+    if (volumeRow) volumeRow.classList.toggle('is-off', !musicSwitch.checked);
+  }
+  paintMusicVolume(musicPrefs.volume);
+
+  // graceful autoplay: one-shot listeners until the browser allows playback
+  let gestureResumeArmed = false;
+  function disarmMusicGesture() {
+    if (!gestureResumeArmed) return;
+    gestureResumeArmed = false;
+    ['pointerdown', 'keydown', 'touchstart'].forEach(ev =>
+      document.removeEventListener(ev, onMusicGesture, true));
+  }
+  function onMusicGesture() {
+    if (!musicSwitch.checked) { disarmMusicGesture(); return; }
+    music.play().then(disarmMusicGesture).catch(() => { /* still blocked, keep armed */ });
+  }
+  function startMusic() {
+    const p = music.play(); // resumes naturally from the paused position
+    if (p && p.catch) p.catch(() => {
+      if (gestureResumeArmed) return;
+      gestureResumeArmed = true;
+      ['pointerdown', 'keydown', 'touchstart'].forEach(ev =>
+        document.addEventListener(ev, onMusicGesture, true));
+    });
+  }
+  function stopMusic() {
+    music.pause(); // position preserved for natural resume
+    disarmMusicGesture();
+  }
+
+  musicSwitch.addEventListener('change', (e) => {
+    const on = e.target.checked;
+    lsSet(MUSIC_KEYS.enabled, on ? '1' : '0'); // playback state only — volume untouched
+    if (volumeRow) volumeRow.classList.toggle('is-off', !on);
+    if (on) startMusic(); else stopMusic();
   });
+
+  if (volumeRange) {
+    volumeRange.addEventListener('input', (e) => {
+      const vol = Math.min(1, Math.max(0, e.target.value / 100));
+      music.volume = vol;
+      paintMusicVolume(vol);
+    });
+    volumeRange.addEventListener('change', (e) => {
+      lsSet(MUSIC_KEYS.volume, e.target.value); // persist once the user adjusts
+    });
+  }
+
+  if (musicPrefs.enabled) startMusic();
 
   // ---------------- logout ----------------
   document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await STANNG.api('/api/logout', { method: 'POST' });
+    await ERRF.api('/api/logout', { method: 'POST' });
     window.location.href = '/login';
   });
 
@@ -107,22 +184,22 @@
   // ---------------- dashboard stats polling ----------------
   async function refreshStats() {
     try {
-      const s = await STANNG.api('/stats');
+      const s = await ERRF.api('/stats');
       document.getElementById('statCpu').textContent = s.cpu_percent.toFixed(1) + '%';
       document.getElementById('barCpu').style.width = Math.min(100, s.cpu_percent) + '%';
       document.getElementById('statMem').textContent = s.mem_percent.toFixed(1) + '%';
       document.getElementById('barMem').style.width = Math.min(100, s.mem_percent) + '%';
-      document.getElementById('statUptime').textContent = STANNG.fmtDuration(s.uptime_seconds);
+      document.getElementById('statUptime').textContent = ERRF.fmtDuration(s.uptime_seconds);
       const loc = s.location || {};
       document.getElementById('statLocation').textContent = `${loc.flag || ''} ${loc.city || '?'}`;
-      document.getElementById('statTotalTraffic').textContent = STANNG.fmtBytes((s.total_up || 0) + (s.total_down || 0));
-      document.getElementById('statUp').textContent = STANNG.fmtBytes(s.total_up || 0);
-      document.getElementById('statDown').textContent = STANNG.fmtBytes(s.total_down || 0);
+      document.getElementById('statTotalTraffic').textContent = ERRF.fmtBytes((s.total_up || 0) + (s.total_down || 0));
+      document.getElementById('statUp').textContent = ERRF.fmtBytes(s.total_up || 0);
+      document.getElementById('statDown').textContent = ERRF.fmtBytes(s.total_down || 0);
       document.getElementById('statActiveConn').textContent = s.active_connections || 0;
       document.getElementById('statInboundCount').textContent = s.inbounds_count || 0;
       document.getElementById('navInboundCount').textContent = s.inbounds_count || 0;
-      document.getElementById('trafficUp').textContent = STANNG.fmtBytes(s.total_up || 0);
-      document.getElementById('trafficDown').textContent = STANNG.fmtBytes(s.total_down || 0);
+      document.getElementById('trafficUp').textContent = ERRF.fmtBytes(s.total_up || 0);
+      document.getElementById('trafficDown').textContent = ERRF.fmtBytes(s.total_down || 0);
       lastHourly = s.hourly || [];
       renderTrafficChart(document.getElementById('trafficChart'), lastHourly);
     } catch (e) { /* ignore transient errors */ }
@@ -138,12 +215,12 @@
 
   async function loadInbounds() {
     try {
-      const r = await STANNG.api('/api/inbounds');
+      const r = await ERRF.api('/api/inbounds');
       currentInbounds = r.inbounds || [];
       renderInboundsTable();
       renderTrafficTable();
       document.getElementById('navInboundCount').textContent = currentInbounds.length;
-    } catch (e) { STANNG.toast(e.detail || 'error', 'error'); }
+    } catch (e) { ERRF.toast(e.detail || 'error', 'error'); }
   }
 
   function renderInboundsTable(filter = '') {
@@ -157,31 +234,31 @@
       const st = ib.status;
       const tr = document.createElement('tr');
       const statusPill = st.live_enabled
-        ? `<span class="pill pill-on"><span class="pill-dot"></span>${STANNG.t('active')}</span>`
-        : `<span class="pill pill-off"><span class="pill-dot"></span>${st.expired ? STANNG.t('expired') : STANNG.t('inactive')}</span>`;
+        ? `<span class="pill pill-on"><span class="pill-dot"></span>${ERRF.t('active')}</span>`
+        : `<span class="pill pill-off"><span class="pill-dot"></span>${st.expired ? ERRF.t('expired') : ERRF.t('inactive')}</span>`;
       const quotaTxt = ib.quota_gb > 0
-        ? `${STANNG.fmtBytes(st.used)} ${STANNG.t('inb_used_of')} ${ib.quota_gb} GB`
-        : `${STANNG.fmtBytes(st.used)} / ${STANNG.t('unlimited')}`;
+        ? `${ERRF.fmtBytes(st.used)} ${ERRF.t('inb_used_of')} ${ib.quota_gb} GB`
+        : `${ERRF.fmtBytes(st.used)} / ${ERRF.t('unlimited')}`;
       const pct = ib.quota_gb > 0 ? Math.min(100, (st.used / st.quota_bytes) * 100) : (st.used > 0 ? 8 : 0);
       const expireTxt = ib.expire_at
-        ? `${st.days_left} ${STANNG.t('inb_days_left')}`
-        : STANNG.t('inb_no_expire');
+        ? `${st.days_left} ${ERRF.t('inb_days_left')}`
+        : ERRF.t('inb_no_expire');
       tr.innerHTML = `
-        <td data-label="${STANNG.t('inb_name')}"><b>${escapeHtml(ib.name)}</b><div class="small muted">${ib.note ? escapeHtml(ib.note) : ''}</div></td>
-        <td data-label="${STANNG.t('inb_status')}">${statusPill}</td>
-        <td data-label="${STANNG.t('inb_usage')}" style="min-width:160px;">
+        <td data-label="${ERRF.t('inb_name')}"><b>${escapeHtml(ib.name)}</b><div class="small muted">${ib.note ? escapeHtml(ib.note) : ''}</div></td>
+        <td data-label="${ERRF.t('inb_status')}">${statusPill}</td>
+        <td data-label="${ERRF.t('inb_usage')}" style="min-width:160px;">
           <div class="small num">${quotaTxt}</div>
           <div class="bar progress-accent"><span style="width:${pct}%"></span></div>
         </td>
-        <td class="num" data-label="${STANNG.t('inb_expire')}">${expireTxt}</td>
-        <td class="num" data-label="${STANNG.t('inb_max_conn')}">${st.active_connections}${ib.max_connections ? ' / ' + ib.max_connections : ''} <span class="small muted">${STANNG.t('inb_active_devices')}</span></td>
-        <td data-label="${STANNG.t('inb_actions')}">
+        <td class="num" data-label="${ERRF.t('inb_expire')}">${expireTxt}</td>
+        <td class="num" data-label="${ERRF.t('inb_max_conn')}">${st.active_connections}${ib.max_connections ? ' / ' + ib.max_connections : ''} <span class="small muted">${ERRF.t('inb_active_devices')}</span></td>
+        <td data-label="${ERRF.t('inb_actions')}">
           <div class="row-actions">
-            <button class="icon-btn btn-sm" data-action="links" data-uid="${ib.uid}" title="${STANNG.t('inb_links')}"><svg width="15" height="15"><use href="#icon-qr"/></svg></button>
-            <button class="icon-btn btn-sm" data-action="edit" data-uid="${ib.uid}" title="${STANNG.t('edit')}"><svg width="15" height="15"><use href="#icon-edit"/></svg></button>
-            <button class="icon-btn btn-sm" data-action="reset" data-uid="${ib.uid}" title="${STANNG.t('inb_reset_usage')}"><svg width="15" height="15"><use href="#icon-refresh"/></svg></button>
-            <button class="icon-btn btn-sm" data-action="regen" data-uid="${ib.uid}" title="${STANNG.t('inb_regenerate')}"><svg width="15" height="15"><use href="#icon-key"/></svg></button>
-            <button class="icon-btn btn-sm danger" data-action="delete" data-uid="${ib.uid}" title="${STANNG.t('delete')}"><svg width="15" height="15"><use href="#icon-trash"/></svg></button>
+            <button class="icon-btn btn-sm" data-action="links" data-uid="${ib.uid}" title="${ERRF.t('inb_links')}"><svg width="15" height="15"><use href="#icon-qr"/></svg></button>
+            <button class="icon-btn btn-sm" data-action="edit" data-uid="${ib.uid}" title="${ERRF.t('edit')}"><svg width="15" height="15"><use href="#icon-edit"/></svg></button>
+            <button class="icon-btn btn-sm" data-action="reset" data-uid="${ib.uid}" title="${ERRF.t('inb_reset_usage')}"><svg width="15" height="15"><use href="#icon-refresh"/></svg></button>
+            <button class="icon-btn btn-sm" data-action="regen" data-uid="${ib.uid}" title="${ERRF.t('inb_regenerate')}"><svg width="15" height="15"><use href="#icon-key"/></svg></button>
+            <button class="icon-btn btn-sm danger" data-action="delete" data-uid="${ib.uid}" title="${ERRF.t('delete')}"><svg width="15" height="15"><use href="#icon-trash"/></svg></button>
           </div>
         </td>`;
       tbody.appendChild(tr);
@@ -199,10 +276,10 @@
     currentInbounds.forEach(ib => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td data-label="${STANNG.t('inb_name')}"><b>${escapeHtml(ib.name)}</b></td>
-        <td data-label="${STANNG.t('dash_upload')}" class="num">${STANNG.fmtBytes(ib.used_up || 0)}</td>
-        <td data-label="${STANNG.t('dash_download')}" class="num">${STANNG.fmtBytes(ib.used_down || 0)}</td>
-        <td data-label="${STANNG.t('inb_usage')}" class="num">${STANNG.fmtBytes((ib.used_up || 0) + (ib.used_down || 0))}</td>`;
+        <td data-label="${ERRF.t('inb_name')}"><b>${escapeHtml(ib.name)}</b></td>
+        <td data-label="${ERRF.t('dash_upload')}" class="num">${ERRF.fmtBytes(ib.used_up || 0)}</td>
+        <td data-label="${ERRF.t('dash_download')}" class="num">${ERRF.fmtBytes(ib.used_down || 0)}</td>
+        <td data-label="${ERRF.t('inb_usage')}" class="num">${ERRF.fmtBytes((ib.used_up || 0) + (ib.used_down || 0))}</td>`;
       tbody.appendChild(tr);
     });
   }
@@ -214,7 +291,7 @@
   }
 
   function openInboundModal(ib = null) {
-    document.getElementById('inboundModalTitle').textContent = ib ? STANNG.t('edit') : STANNG.t('inb_add');
+    document.getElementById('inboundModalTitle').textContent = ib ? ERRF.t('edit') : ERRF.t('inb_add');
     document.getElementById('inboundUid').value = ib ? ib.uid : '';
     document.getElementById('fName').value = ib ? ib.name : '';
     document.getElementById('fQuota').value = ib ? (ib.quota_gb || '') : '';
@@ -242,21 +319,21 @@
       note: document.getElementById('fNote').value.trim(),
     };
     const btn = document.getElementById('inboundSaveBtn');
-    STANNG.setLoading(btn, true);
+    ERRF.setLoading(btn, true);
     try {
       if (uid) {
-        await STANNG.api(`/api/inbounds/${uid}`, { method: 'PATCH', body: payload });
-        STANNG.toast(STANNG.t('inb_updated'), 'success');
+        await ERRF.api(`/api/inbounds/${uid}`, { method: 'PATCH', body: payload });
+        ERRF.toast(ERRF.t('inb_updated'), 'success');
       } else {
-        await STANNG.api('/api/inbounds', { method: 'POST', body: payload });
-        STANNG.toast(STANNG.t('inb_created'), 'success');
+        await ERRF.api('/api/inbounds', { method: 'POST', body: payload });
+        ERRF.toast(ERRF.t('inb_created'), 'success');
       }
       closeModal('inboundModal');
       loadInbounds();
     } catch (e) {
-      STANNG.toast(e.detail || 'error', 'error');
+      ERRF.toast(e.detail || 'error', 'error');
     } finally {
-      STANNG.setLoading(btn, false);
+      ERRF.setLoading(btn, false);
     }
   });
 
@@ -267,28 +344,28 @@
     if (action === 'links') return showLinksModal(uid);
     if (action === 'reset') {
       try {
-        await STANNG.api(`/api/inbounds/${uid}/reset-usage`, { method: 'POST' });
-        STANNG.toast(STANNG.t('inb_reset_done'), 'success');
+        await ERRF.api(`/api/inbounds/${uid}/reset-usage`, { method: 'POST' });
+        ERRF.toast(ERRF.t('inb_reset_done'), 'success');
         loadInbounds();
-      } catch (e) { STANNG.toast(e.detail || 'error', 'error'); }
+      } catch (e) { ERRF.toast(e.detail || 'error', 'error'); }
       return;
     }
     if (action === 'regen') {
-      if (!confirm(STANNG.t('inb_regenerate_confirm'))) return;
+      if (!confirm(ERRF.t('inb_regenerate_confirm'))) return;
       try {
-        await STANNG.api(`/api/inbounds/${uid}/regenerate`, { method: 'POST' });
-        STANNG.toast(STANNG.t('inb_regenerated'), 'success');
+        await ERRF.api(`/api/inbounds/${uid}/regenerate`, { method: 'POST' });
+        ERRF.toast(ERRF.t('inb_regenerated'), 'success');
         loadInbounds();
-      } catch (e) { STANNG.toast(e.detail || 'error', 'error'); }
+      } catch (e) { ERRF.toast(e.detail || 'error', 'error'); }
       return;
     }
     if (action === 'delete') {
-      if (!confirm(STANNG.t('inb_delete_confirm'))) return;
+      if (!confirm(ERRF.t('inb_delete_confirm'))) return;
       try {
-        await STANNG.api(`/api/inbounds/${uid}`, { method: 'DELETE' });
-        STANNG.toast(STANNG.t('inb_deleted'), 'success');
+        await ERRF.api(`/api/inbounds/${uid}`, { method: 'DELETE' });
+        ERRF.toast(ERRF.t('inb_deleted'), 'success');
         loadInbounds();
-      } catch (e) { STANNG.toast(e.detail || 'error', 'error'); }
+      } catch (e) { ERRF.toast(e.detail || 'error', 'error'); }
       return;
     }
   }
@@ -296,7 +373,7 @@
   // ============ LINKS MODAL (v1.4.1) ============
   async function showLinksModal(uid) {
     try {
-      const r = await STANNG.api(`/api/inbounds/${uid}/links`);
+      const r = await ERRF.api(`/api/inbounds/${uid}/links`);
       
       // نمایش لینک TLS
       document.getElementById('linkTls').textContent = r.links.tls || '';
@@ -319,15 +396,15 @@
       
       openModal('linksModal');
     } catch (e) { 
-      STANNG.toast(e.detail || 'error', 'error'); 
+      ERRF.toast(e.detail || 'error', 'error'); 
     }
   }
 
   // ---------------- copy functionality ----------------
   function copyText(text) {
     navigator.clipboard.writeText(text).then(() => {
-      STANNG.toast(STANNG.t('copied'), 'success', 1600);
-    }).catch(() => STANNG.toast('error', 'error'));
+      ERRF.toast(ERRF.t('copied'), 'success', 1600);
+    }).catch(() => ERRF.toast('error', 'error'));
   }
 
   document.querySelectorAll('[data-copy]').forEach(btn => {
@@ -350,23 +427,23 @@
     const new_password = document.getElementById('newPassword').value;
     const new_password2 = document.getElementById('newPassword2').value;
     if (new_password && new_password !== new_password2) {
-      STANNG.toast(STANNG.t('setup_mismatch'), 'error');
-      STANNG.shake(document.getElementById('securityForm'));
+      ERRF.toast(ERRF.t('setup_mismatch'), 'error');
+      ERRF.shake(document.getElementById('securityForm'));
       return;
     }
     const btn = document.getElementById('securityBtn');
-    STANNG.setLoading(btn, true);
+    ERRF.setLoading(btn, true);
     try {
-      await STANNG.api('/api/change-password', { method: 'POST', body: { old_password, new_username, new_password } });
-      STANNG.toast(STANNG.t('sec_updated'), 'success');
+      await ERRF.api('/api/change-password', { method: 'POST', body: { old_password, new_username, new_password } });
+      ERRF.toast(ERRF.t('sec_updated'), 'success');
       document.getElementById('securityForm').reset();
     } catch (e) {
       let msg = e.detail;
-      if (msg === 'wrong-old-password') msg = STANNG.t('sec_wrong_old');
-      STANNG.toast(msg || 'error', 'error');
-      STANNG.shake(document.getElementById('securityForm'));
+      if (msg === 'wrong-old-password') msg = ERRF.t('sec_wrong_old');
+      ERRF.toast(msg || 'error', 'error');
+      ERRF.shake(document.getElementById('securityForm'));
     } finally {
-      STANNG.setLoading(btn, false);
+      ERRF.setLoading(btn, false);
     }
   });
 
@@ -377,14 +454,14 @@
       keep_alive: document.getElementById('settingKeepAlive').checked,
     };
     const btn = document.getElementById('saveSettingsBtn');
-    STANNG.setLoading(btn, true);
+    ERRF.setLoading(btn, true);
     try {
-      await STANNG.api('/api/settings', { method: 'POST', body: payload });
-      STANNG.toast(STANNG.t('settings_saved'), 'success');
+      await ERRF.api('/api/settings', { method: 'POST', body: payload });
+      ERRF.toast(ERRF.t('settings_saved'), 'success');
     } catch (e) {
-      STANNG.toast(e.detail || 'error', 'error');
+      ERRF.toast(e.detail || 'error', 'error');
     } finally {
-      STANNG.setLoading(btn, false);
+      ERRF.setLoading(btn, false);
     }
   });
 
@@ -394,7 +471,7 @@
       default_fingerprint: document.getElementById('settingFingerprint').value,
       default_alpn: document.getElementById('settingAlpn').value,
       sni_override: document.getElementById('settingSniOverride').value.trim(),
-      link_prefix: document.getElementById('settingLinkPrefix').value.trim() || 'aperrf',
+      link_prefix: document.getElementById('settingLinkPrefix').value.trim() || 'errfpanel',
       link_name_vl_ws_tls: document.getElementById('settingNameVlWsTls').value.trim(),
       link_name_vm_ws_tls: document.getElementById('settingNameVmWsTls').value.trim(),
       link_name_vl_xhttp_tls: document.getElementById('settingNameVlXhttpTls').value.trim(),
@@ -405,14 +482,14 @@
       fragment_interval: document.getElementById('settingFragmentInterval').value.trim() || '10-20',
     };
     const btn = document.getElementById('saveAdvancedBtn');
-    STANNG.setLoading(btn, true);
+    ERRF.setLoading(btn, true);
     try {
-      await STANNG.api('/api/settings', { method: 'POST', body: payload });
-      STANNG.toast(STANNG.t('settings_saved'), 'success');
+      await ERRF.api('/api/settings', { method: 'POST', body: payload });
+      ERRF.toast(ERRF.t('settings_saved'), 'success');
     } catch (e) {
-      STANNG.toast(e.detail || 'error', 'error');
+      ERRF.toast(e.detail || 'error', 'error');
     } finally {
-      STANNG.setLoading(btn, false);
+      ERRF.setLoading(btn, false);
     }
   });
 

@@ -5,7 +5,13 @@ used or referenced. You are free to use, modify, and redistribute these
 images as part of the StanNG project under the same license as the rest of
 this repository (MIT — see /LICENSE).
 
-2026-09 aperrf rebrand: logo-aperrf.svg / favicon-aperrf.svg authored as original
-flat vector work (aperture-transmitter mark, MIT-licensed with this repo);
-favicon-32.png / favicon-180.png regenerated from that mark. logo-square.png and
-hero-bg.jpg remain on disk as legacy StanNG-era assets (no longer referenced).
+2026-09 rebrand to errfpanel: logo-errfpanel.svg / favicon-errfpanel.svg
+authored as original flat vector work (liquid-glass droplet mark, MIT-licensed
+with this repo); favicon-32.png / favicon-180.png / logo-square.png regenerated
+from that mark. hero-bg.jpg remains on disk as a legacy asset (no longer
+referenced).
+
+2026-09 errf v3 brand mark: logo-errf-mark.svg / logo-errf.svg authored as
+original geometric vector work (open-ring "e" with crossbar, MIT-licensed
+with this repo); favicon-errfpanel.svg / favicon-32.png / favicon-180.png
+regenerated from the new mark.

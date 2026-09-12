@@ -1,13 +1,13 @@
 <div align="center">
 
-<img src="static/img/logo-aperrf.svg" width="110" alt="aperrf logo">
+<img src="static/img/logo-errfpanel.svg" width="110" alt="errfpanel logo">
 
-# ⚡ aperrf v1.5.6
+# ⚡ errfpanel v1.5.6
 
-### یک پنل تک‌سرویسهٔ پروکسی VLESS با تم جادوگری  
-**A single-service VLESS proxy panel with a wizarding theme**
+### یک پنل تک‌سرویسهٔ پروکسی VLESS با پوستهٔ شیشه‌ای (Liquid Glass)  
+**A single-service VLESS proxy panel with a liquid-glass skin**
 
-> # ⚠️ **پنل aperrf رایگان و غیر قابل فروش است**
+> # ⚠️ **پنل errfpanel رایگان و غیر قابل فروش است**
 >
 > هرگونه فروش این پنل ممنوع بوده و تخلف محسوب می‌شود.
 
@@ -55,7 +55,7 @@
 | کامپوننت | پورت | نقش |
 |----------|------|-----|
 | Nginx | `$PORT` (پیش‌فرض `8000`) | ورودی عمومی — مسیرهای `/vl-ws`، `/vm-ws`، `/vl-xhttp` به Xray و بقیهٔ درخواست‌ها به پنل |
-| پنل aperrf (FastAPI + uvicorn) | `10000` (داخلی) | رابط وب و API |
+| پنل errfpanel (FastAPI + uvicorn) | `10000` (داخلی) | رابط وب و API |
 | Xray — VLESS/WS | `10001` (داخلی) | پروکسی مسیر `/vl-ws` |
 | Xray — VMess/WS | `10002` (داخلی) | پروکسی مسیر `/vm-ws` |
 | Xray — VLESS/XHTTP | `10004` (داخلی) | پروکسی مسیر `/vl-xhttp` |
@@ -78,7 +78,7 @@
 ### 🌐 Render
 
 1. ریپازیتوری را به GitHub push کنید.
-2. در [render.com](https://render.com) → **New → Web Service** → اتصال ریپازیتوری؛ فایل `render.yaml` به‌صورت خودکار شناسایی می‌شود (name: `aperrf`, env: python, build: `pip install -r requirements.txt`, start: `python main.py`).
+2. در [render.com](https://render.com) → **New → Web Service** → اتصال ریپازیتوری؛ فایل `render.yaml` به‌صورت خودکار شناسایی می‌شود (name: `errfpanel`, env: python, build: `pip install -r requirements.txt`, start: `python main.py`).
 3. بعد از دیپلوی به مسیر `/setup` بروید.
 
 > ⚠️ توجه: `render.yaml` سرویس را **بدون Docker** (بدون Nginx و Xray) دیپلوی می‌کند؛ در این حالت رابط پنل، تنظیمات، اشتراک‌ها و صفحهٔ وضعیت در دسترس‌اند، ولی اتصال پروکسیِ کانفیگ‌ها (نیازمند Xray) برقرار نمی‌شود. برای سرویس کامل، روش Railway/Docker توصیه می‌شود.
@@ -88,8 +88,8 @@
 پیش‌نیاز: Python 3 (تست‌شده با ۳.۱۱)
 
 ```bash
-git clone https://github.com/<your-username>/aperrf.git
-cd aperrf
+git clone https://github.com/<your-username>/errfpanel.git
+cd errfpanel
 pip install -r requirements.txt
 python main.py
 # → Setup: http://127.0.0.1:10000/setup
@@ -100,8 +100,8 @@ python main.py
 ### 🐳 اجرای محلی با داکر (پنل + Xray + Nginx)
 
 ```bash
-docker build -t aperrf .
-docker run -p 8000:8000 aperrf
+docker build -t errfpanel .
+docker run -p 8000:8000 errfpanel
 # → Setup: http://localhost:8000/setup
 ```
 
@@ -123,7 +123,7 @@ docker run -p 8000:8000 aperrf
 |-------|---------|-------|
 | `PORT` | `8000` | پورت گوش‌دادن Nginx در ایمیج داکر/Railway (روی پلتفرم به‌صورت خودکار ست می‌شود) |
 | `PANEL_PORT` | `10000` | پورت داخلی پنل؛ uvicorn روی `127.0.0.1` می‌نشیند و Nginx آن را پروکسی می‌کند |
-| `STANNG_DATA_DIR` | `./data` | پوشهٔ ذخیرهٔ `db.json` (برای پشتیبان‌گیری یا مانت کردن volume) |
+| `ERRFPANEL_DATA_DIR` | `./data` | پوشهٔ ذخیرهٔ `db.json` (برای پشتیبان‌گیری یا مانت کردن volume) |
 
 > 📝 در این نسخه متغیرهایی مثل `SECRET_KEY` یا `BASE_PATH` وجود ندارند — کلید امضای سشن هنگام اولین اجرا تولید شده و داخل `data/db.json` ذخیره می‌شود.
 
@@ -183,4 +183,4 @@ docker run -p 8000:8000 aperrf
 
 ---
 
-<div align="center">**aperrf** — ساده، سبک، و جادویی 🧙‍♂️</div>
+<div align="center">**errfpanel** — ساده، سبک و شیشه‌ای ✨</div>

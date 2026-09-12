@@ -1,12 +1,15 @@
 /* ===========================================================
-   StanNG — bilingual dictionary (fa / en) v1.5.2
+   errfpanel — bilingual dictionary (fa / en) v1.6.1
    Removed: Clean IP, Non‑TLS
    Added: Info Configs descriptions, JSON subscription link
+   errf v3 : premium product wording, auth hero & page-head copy
+   v1.6.1 : persistent music control (volume label)
    =========================================================== */
 window.I18N = {
   // ---- brand / generic ----
-  brand_name: { fa: 'aperrf', en: 'aperrf' },
-  brand_tagline: { fa: 'دروازه‌ی نامرئی به دنیای شبکه', en: 'The invisible gateway to the wizarding net' },
+  brand_name: { fa: 'errfpanel', en: 'errfpanel' },
+  brand_short: { fa: 'errf', en: 'errf' },
+  brand_tagline: { fa: 'فضای ابری مدیریت شبکه', en: 'Your cloud network control space' },
   loading: { fa: 'در حال بارگذاری...', en: 'Loading...' },
   save: { fa: 'ذخیره', en: 'Save' },
   cancel: { fa: 'انصراف', en: 'Cancel' },
@@ -27,24 +30,50 @@ window.I18N = {
   never: { fa: 'هرگز', en: 'Never' },
 
   // ---- setup ----
-  setup_title: { fa: 'برپایی اولیه پنل', en: 'Initial Panel Setup' },
-  setup_sub: { fa: 'یک نام کاربری و رمز عبور برای دسترسی به پنل خود بسازید', en: 'Create a username & password to access your panel' },
+  setup_title: { fa: 'شروع فضای مدیریت', en: 'Start your workspace' },
+  setup_sub: { fa: 'فضای شما آماده است — فقط یک حساب بسازید تا مدیریت را آغاز کنید', en: 'Your workspace is ready — create an account to begin managing' },
   setup_username_label: { fa: 'نام کاربری', en: 'Username' },
   setup_password_label: { fa: 'رمز عبور', en: 'Password' },
   setup_password_confirm_label: { fa: 'تکرار رمز عبور', en: 'Confirm Password' },
-  setup_submit: { fa: 'ساخت حساب و ورود', en: 'Create Account & Enter' },
+  setup_submit: { fa: 'ساخت حساب و ادامه', en: 'Create account & continue' },
   setup_username_hint: { fa: 'فقط حروف انگلیسی، عدد و زیرخط (۳ تا ۳۲ کاراکتر)', en: 'Letters, numbers, underscore only (3-32 chars)' },
   setup_password_hint: { fa: 'حداقل ۶ کاراکتر', en: 'At least 6 characters' },
   setup_mismatch: { fa: 'رمزهای عبور یکسان نیستند', en: 'Passwords do not match' },
-  setup_done: { fa: 'حساب شما ساخته شد! خوش آمدید', en: 'Account created! Welcome' },
+  setup_done: { fa: 'فضای مدیریت شما آماده است', en: 'Your control space is ready' },
 
   // ---- login ----
-  login_title: { fa: 'ورود به پنل', en: 'Panel Login' },
-  login_sub: { fa: 'با نام کاربری و رمز عبور خود وارد شوید', en: 'Sign in with your username and password' },
+  login_title: { fa: 'ورود به فضای مدیریت', en: 'Sign in to your workspace' },
+  login_sub: { fa: 'برای ادامه، وارد حساب مدیر خود شوید', en: 'Enter your admin credentials to continue' },
   login_submit: { fa: 'ورود', en: 'Sign In' },
   login_success: { fa: 'خوش آمدید!', en: 'Welcome back!' },
   login_failed: { fa: 'نام کاربری یا رمز عبور اشتباه است', en: 'Invalid username or password' },
   login_locked: { fa: 'تلاش بیش از حد؛ کمی صبر کنید', en: 'Too many attempts; please wait' },
+
+  // ---- errf v3 brand / auth hero / page heads ----
+  auth_eyebrow: { fa: 'CLOUD NETWORK CONTROL', en: 'CLOUD NETWORK CONTROL' },
+  status_eyebrow: { fa: 'SUBSCRIPTION STATUS', en: 'SUBSCRIPTION STATUS' },
+  status_live: { fa: 'در حال اجرا', en: 'Running' },
+  setup_hero_sub: { fa: 'شبکه‌ی اختصاصی شما، در یک فضای مدیریتی مدرن — سریع، امن و بدون شلوغی.', en: 'Your private network in a modern control space — fast, secure, uncluttered.' },
+  setup_feat1_t: { fa: 'کانفیگ آنی', en: 'Instant configs' },
+  setup_feat1_d: { fa: 'TLS، لینک اشتراک و QR در یک لحظه', en: 'TLS, subscription and QR links in one moment' },
+  setup_feat2_t: { fa: 'پایش زنده', en: 'Live monitoring' },
+  setup_feat2_d: { fa: 'ترافیک ساعتی، CPU و حافظه — به‌موقع', en: 'Hourly traffic, CPU and memory — always current' },
+  setup_feat3_t: { fa: 'امنیت لایه‌ای', en: 'Layered security' },
+  setup_feat3_d: { fa: 'قفل IP، Fragment و اعتبار زمانی', en: 'IP lock, Fragment and time-based expiry' },
+  setup_meta_free: { fa: 'رایگان و متن‌باز', en: 'Free and open source' },
+  setup_meta_deploy: { fa: 'استقرار با Docker، Railway یا Render', en: 'Deploy via Docker, Railway or Render' },
+  login_hero_sub: { fa: 'فضای مدیریت شما امن و در حال اجراست — برای ادامه وارد شوید.', en: 'Your control space is secure and running — sign in to continue.' },
+  login_meta_note: { fa: 'دسترسی فقط برای مدیر پنل', en: 'Access is limited to the panel admin' },
+  ph_eyebrow_monitor: { fa: 'OVERVIEW', en: 'OVERVIEW' },
+  ph_eyebrow_users: { fa: 'ACCESS', en: 'ACCESS' },
+  ph_eyebrow_traffic: { fa: 'TRAFFIC', en: 'TRAFFIC' },
+  ph_eyebrow_security: { fa: 'SECURITY', en: 'SECURITY' },
+  ph_eyebrow_settings: { fa: 'SETTINGS', en: 'SETTINGS' },
+  ph_dash_d: { fa: 'وضعیت لحظه‌ای سرور، ترافیک و کاربران در یک نگاه.', en: 'Live server, traffic and user status at a glance.' },
+  ph_inb_d: { fa: 'ساخت کاربر، سهمیه حجم، اعتبار زمانی و لینک‌های اشتراک.', en: 'Create users, set quota, expiry and subscription links.' },
+  ph_traffic_d: { fa: 'مجموع آپلود و دانلود و تفکیک مصرف هر کاربر.', en: 'Total upload and download with per-user breakdown.' },
+  ph_sec_d: { fa: 'تغییر نام کاربری و رمز عبور فضای مدیریتی.', en: 'Change the username and password of your control space.' },
+  ph_set_d: { fa: 'پیکربندی عمومی و پیش‌فرض‌های ساخت کانفیگ برای همه کاربران.', en: 'General settings and config defaults applied to all users.' },
 
   // ---- sidebar nav ----
   nav_dashboard: { fa: 'داشبورد', en: 'Dashboard' },
@@ -60,7 +89,7 @@ window.I18N = {
   nav_support: { fa: 'پشتیبانی تلگرام', en: 'Telegram Support' },
 
   // ---- dashboard ----
-  dash_welcome: { fa: 'به قلمرو aperrf خوش آمدید', en: 'Welcome to the aperrf realm' },
+  dash_welcome: { fa: 'به فضای مدیریت errfpanel خوش آمدید', en: 'Welcome to your errfpanel workspace' },
   dash_cpu: { fa: 'پردازنده', en: 'CPU' },
   dash_ram: { fa: 'حافظه', en: 'Memory' },
   dash_uptime: { fa: 'زمان فعالیت', en: 'Uptime' },
@@ -72,7 +101,7 @@ window.I18N = {
   dash_download: { fa: 'دانلود', en: 'Download' },
   dash_hourly_chart: { fa: 'نمودار ترافیک ساعتی', en: 'Hourly Traffic Chart' },
   dash_quick_add: { fa: 'افزودن کاربر جدید', en: 'Add New User' },
-  dash_status_title: { fa: 'وضعیت پنل', en: 'Panel Status' },
+  dash_status_title: { fa: 'وضعیت سرویس', en: 'Service status' },
 
   // ---- inbounds ----
   inb_title: { fa: 'مدیریت کاربران', en: 'User Management' },
@@ -153,6 +182,7 @@ window.I18N = {
   settings_keepalive: { fa: 'سیستم بیدارباش (Keep-Alive)', en: 'Keep-Alive System' },
   settings_keepalive_hint: { fa: 'هر ۱۰ دقیقه یک بار پینگ داخلی برای جلوگیری از خواب رفتن سرویس', en: 'Pings itself every 10 minutes to prevent free-tier sleep' },
   settings_music: { fa: 'پخش موسیقی', en: 'Play Music' },
+  settings_music_volume: { fa: 'ولوم موسیقی', en: 'Music volume' },
   settings_theme: { fa: 'پوسته', en: 'Theme' },
   settings_theme_dark: { fa: 'تاریک', en: 'Dark' },
   settings_theme_light: { fa: 'روشن', en: 'Light' },
@@ -163,7 +193,7 @@ window.I18N = {
   settings_sni_override: { fa: 'SNI اختصاصی (Domain Fronting)', en: 'Custom SNI (Domain Fronting)' },
   settings_sni_override_hint: { fa: 'اگر خالی باشد، دامنه اصلی به‌عنوان SNI استفاده می‌شود.', en: 'If left blank, the main domain is used as SNI.' },
   settings_link_prefix: { fa: 'پیشوند نام کانفیگ‌ها در اشتراک', en: 'Subscription Link Name Prefix' },
-  settings_link_prefix_hint: { fa: 'متنی که به‌جای «aperrf» در ابتدای نام کانفیگ‌های خروجی اشتراک استفاده می‌شود.', en: 'Text used instead of "aperrf" at the start of subscription config names.' },
+  settings_link_prefix_hint: { fa: 'متنی که به‌جای «errfpanel» در ابتدای نام کانفیگ‌های خروجی اشتراک استفاده می‌شود.', en: 'Text used instead of "errfpanel" at the start of subscription config names.' },
   settings_subscription_name: { fa: 'عنوان اشتراک (Subscription Name)', en: 'Subscription Name / Title' },
   settings_subscription_name_hint: { fa: 'در صورت خالی بودن، عنوان پیش‌فرض نمایش داده می‌شود.', en: 'If left blank, the default title is shown.' },
   settings_link_name_vl: { fa: 'نام اختصاصی کانفیگ VL-WS-TLS', en: 'Custom Name — VL-WS-TLS Config' },

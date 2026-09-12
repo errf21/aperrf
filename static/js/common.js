@@ -1,22 +1,22 @@
 /* ===========================================================
-   StanNG — shared front-end utilities
+   errfpanel — shared front-end utilities
    (i18n dictionary, theme/lang persistence, toasts,
    ripple effect, small fetch helper). No external CDN deps.
    =========================================================== */
 
-const STANNG = (() => {
+const ERRF = (() => {
   // ---------------- theme ----------------
-  function getTheme() { return localStorage.getItem('stanng_theme') || 'dark'; }
+  function getTheme() { return localStorage.getItem('errfpanel_theme') || 'dark'; }
   function setTheme(t) {
-    localStorage.setItem('stanng_theme', t);
+    localStorage.setItem('errfpanel_theme', t);
     document.documentElement.setAttribute('data-theme', t);
   }
   function applyStoredTheme() { setTheme(getTheme()); }
 
   // ---------------- lang ----------------
-  function getLang() { return localStorage.getItem('stanng_lang') || 'fa'; }
+  function getLang() { return localStorage.getItem('errfpanel_lang') || 'fa'; }
   function setLang(l) {
-    localStorage.setItem('stanng_lang', l);
+    localStorage.setItem('errfpanel_lang', l);
     document.documentElement.setAttribute('lang', l);
     document.documentElement.setAttribute('dir', l === 'fa' ? 'rtl' : 'ltr');
     document.body.classList.toggle('lang-en', l === 'en');
@@ -178,12 +178,12 @@ const STANNG = (() => {
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
-  STANNG.applyStoredTheme();
-  document.documentElement.setAttribute('lang', STANNG.getLang());
-  document.documentElement.setAttribute('dir', STANNG.getLang() === 'fa' ? 'rtl' : 'ltr');
-  document.body.classList.toggle('lang-en', STANNG.getLang() === 'en');
-  STANNG.translatePage();
-  STANNG.initRipples();
+  ERRF.applyStoredTheme();
+  document.documentElement.setAttribute('lang', ERRF.getLang());
+  document.documentElement.setAttribute('dir', ERRF.getLang() === 'fa' ? 'rtl' : 'ltr');
+  document.body.classList.toggle('lang-en', ERRF.getLang() === 'en');
+  ERRF.translatePage();
+  ERRF.initRipples();
   const field = document.querySelector('.sparkle-field');
-  if (field) STANNG.initSparkles(field);
+  if (field) ERRF.initSparkles(field);
 });
